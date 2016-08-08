@@ -127,3 +127,39 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'teaedi', 'static')
 LOGIN_URL = '/login/'
 LOGOUT_URL = '/logout/'
 LOGIN_REDIRECT_URL = '/index/'
+
+
+# LDAP Authentication Configuration
+import ldap
+from django_auth_ldap.config import LDAPSearch, GroupOfNamesType
+import logging
+
+logger = logging.getLogger('django_auth_ldap')
+logger.addHandler(logging.StreamHandler())
+logger.setLevel(logging.DEBUG)
+
+AUTHENTICATION_BACKENDS = (
+    'django_auth_ldap.backend.LDAPBackend',
+    'django.contrib.auth.backends.ModelBackend',
+)
+
+AUTH_LDAP_SERVER_URI = "ldap://dfwcxdc1.corp.simpat.co"
+#AUTH_LDAP_USER_DN_TEMPLATE = "cn=%(user)s,OU=Simpatico Users,OU=Simpatico,DC=corp,DC=simpat,DC=co"
+
+AUTH_LDAP_BIND_DN = "corp\ediuser"
+AUTH_LDAP_BIND_PASSWORD = "Pass123$"
+AUTH_LDAP_USER_SEARCH = LDAPSearch("OU=Simpatico Users,OU=Simpatico,DC=corp,DC=simpat,DC=co", ldap.SCOPE_SUBTREE, "(sAMAccountName=%(user)s)")
+
+# Set up the basic group parameters.
+AUTH_LDAP_GROUP_SEARCH = LDAPSearch("OU=Simpatico Groups,OU=Simpatico,DC=corp,DC=simpat,DC=co",
+    ldap.SCOPE_SUBTREE, "(objectClass=groupOfNames)"
+)
+AUTH_LDAP_GROUP_TYPE = GroupOfNamesType(name_attr="cn")
+AUTH_LDAP_REQUIRE_GROUP = "CN=EDI,OU=Simpatico Groups,OU=Simpatico,DC=corp,DC=simpat,DC=co"
+
+# Populate the Django user from the LDAP directory.
+AUTH_LDAP_USER_ATTR_MAP = {
+    "first_name": "givenName",
+    "last_name": "sn",
+    "email": "userPrincipalName"
+}
