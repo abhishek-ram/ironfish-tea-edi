@@ -92,3 +92,4 @@ ENV/
 .DS_STORE
 .idea
 db*
+settings.py
