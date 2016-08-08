@@ -1,52 +1,319 @@
 {% extends 'core/layout.html' %}
+{% load staticfiles %}
 
+{% block head_css %}
+  <link href="{% static "vendors/dropzone/dist/min/dropzone.min.css" %}" rel="stylesheet">
+{% endblock %}
 {% block body_content %}
 <!-- page content -->
 <div class="right_col" role="main">
-  <div class="">
-    <div class="page-title">
-      <div class="title_left">
-        <h3>Plain Page</h3>
-      </div>
+  <!-- Top Tiles-->
+  <div class="row tile_count">
 
-      <div class="title_right">
-        <div class="col-md-5 col-sm-5 col-xs-12 form-group pull-right top_search">
-          <div class="input-group">
-            <input type="text" class="form-control" placeholder="Search for...">
-            <span class="input-group-btn">
-              <button class="btn btn-default" type="button">Go!</button>
-            </span>
-          </div>
+    <div class="col-md-2 col-sm-4 col-xs-6 tile_stats_count">
+      <span class="count_top"><i class="fa fa-user"></i> New Purchase Orders</span>
+      <div class="count green">2</div>
+    </div>
+    <div class="col-md-2 col-sm-4 col-xs-6 tile_stats_count">
+      <span class="count_top"><i class="fa fa-user"></i> Total Purchase Orders</span>
+      <div class="count">25</div>
+    </div>
+    <div class="col-md-2 col-sm-4 col-xs-6 tile_stats_count">
+      <span class="count_top"><i class="fa fa-user"></i> Uploaded Invoices</span>
+      <div class="count">20</div>
+    </div>
+    <div class="col-md-2 col-sm-4 col-xs-6 tile_stats_count">
+      <span class="count_top"><i class="fa fa-user"></i> Processed Invoices</span>
+      <div class="count">20</div>
+    </div>
+    <div class="col-md-2 col-sm-4 col-xs-6 tile_stats_count">
+      <span class="count_top"><i class="fa fa-user"></i> Acknowledged Invoices</span>
+      <div class="count green">17</div>
+    </div>
+    <div class="col-md-2 col-sm-4 col-xs-6 tile_stats_count">
+      <span class="count_top"><i class="fa fa-clock-o"></i> Pending Invoices</span>
+      <div class="count">3</div>
+    </div>
+
+  </div>
+  <!-- Top Tiles-->
+
+  <div class="row">
+    <div class="col-md-6 col-sm-6 col-xs-12">
+      <div class="x_panel">
+        <div class="x_title">
+          <h2>Purchase Orders <small>Latest Orders from TEA</small></h2>
+          <ul class="nav navbar-right panel_toolbox">
+            <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+            </li>
+            <li class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-wrench"></i></a>
+              <ul class="dropdown-menu" role="menu">
+                <li><a href="#">Settings 1</a>
+                </li>
+                <li><a href="#">Settings 2</a>
+                </li>
+              </ul>
+            </li>
+            <li><a class="close-link"><i class="fa fa-close"></i></a>
+            </li>
+          </ul>
+          <div class="clearfix"></div>
+        </div>
+        <div class="x_content">
+
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Order Number</th>
+                <th>Received On</th>
+                <th>Downloaded On</th>
+                <th>Downloaded By</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th scope="row">AKPR10582
+                  <span class="label label-primary">New</span></th>
+
+                <td>Aug 08, 2016 00:03</td>
+                <td>Aug 08, 2016 00:03</td>
+                <td>ediuser</td>
+                <td>
+                  <button type="button" class="btn btn-round btn-success btn-xs">Download</button>
+                </td>
+              </tr>
+              <tr>
+                <th scope="row">DSAG21321</th>
+                <td>Aug 08, 2016 00:03</td>
+                <td>Aug 08, 2016 00:03</td>
+                <td>ediuser</td>
+                <td>
+                  <button type="button" class="btn btn-round btn-success btn-xs">Download</button>
+                </td>
+              </tr>
+              <tr>
+                <th scope="row">ASDA132234</th>
+                <td>Aug 08, 2016 00:03</td>
+                <td>Aug 08, 2016 00:03</td>
+                <td>ediuser</td>
+                <td>
+                  <button type="button" class="btn btn-round btn-success btn-xs">Download</button>
+                </td>
+              </tr>
+              <tr>
+                <th scope="row">ASDA132234</th>
+                <td>Aug 08, 2016 00:03</td>
+                <td>Aug 08, 2016 00:03</td>
+                <td>ediuser</td>
+                <td>
+                  <button type="button" class="btn btn-round btn-success btn-xs">Download</button>
+                </td>
+              </tr>
+              <tr>
+                <th scope="row">ASDA132234</th>
+                <td>Aug 08, 2016 00:03</td>
+                <td>Aug 08, 2016 00:03</td>
+                <td>ediuser</td>
+                <td>
+                  <button type="button" class="btn btn-round btn-success btn-xs">Download</button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+
         </div>
       </div>
     </div>
+    <div class="col-md-6 col-sm-6 col-xs-12">
+      <div class="x_panel">
+        <div class="x_title">
+          <h2>Invoices <small>Latest Invoices sent to TEA</small></h2>
+          <ul class="nav navbar-right panel_toolbox">
+            <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+            </li>
+            <li class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-wrench"></i></a>
+              <ul class="dropdown-menu" role="menu">
+                <li><a href="#">Settings 1</a>
+                </li>
+                <li><a href="#">Settings 2</a>
+                </li>
+              </ul>
+            </li>
+            <li><a class="close-link"><i class="fa fa-close"></i></a>
+            </li>
+          </ul>
+          <div class="clearfix"></div>
+        </div>
+        <div class="x_content">
 
-    <div class="clearfix"></div>
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Invoice Number</th>
+                <th>Uploaded By</th>
+                <th>Uploaded On</th>
+                <th>Processed On</th>
+                <th>Acknowledged On</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th scope="row">1</th>
+                <td>Mark</td>
+                <td>Aug 08, 2016 00:03</td>
+                <td>Aug 08, 2016 00:03</td>
+                <td>Aug 08, 2016 00:03</td>
+              </tr>
+              <tr>
+                <th scope="row">2</th>
+                <td>Jacob</td>
+                <td>Aug 08, 2016 00:03</td>
+                <td>Aug 08, 2016 00:03</td>
+                <td>Aug 08, 2016 00:03</td>
+              </tr>
+              <tr>
+                <th scope="row">3</th>
+                <td>Larry</td>
+                <td>Aug 08, 2016 00:03</td>
+                <td>Aug 08, 2016 00:03</td>
+                <td>Aug 08, 2016 00:03</td>
+              </tr>
+              <tr>
+                <th scope="row">3</th>
+                <td>Larry</td>
+                <td>Aug 08, 2016 00:03</td>
+                <td>Aug 08, 2016 00:03</td>
+                <td>Aug 08, 2016 00:03</td>
+              </tr>
+              <tr>
+                <th scope="row">3</th>
+                <td>Larry</td>
+                <td>Aug 08, 2016 00:03</td>
+                <td>Aug 08, 2016 00:03</td>
+                <td>Aug 08, 2016 00:03</td>
+              </tr>
+            </tbody>
+          </table>
 
-    <div class="row">
-      <div class="col-md-12 col-sm-12 col-xs-12">
-        <div class="x_panel">
-          <div class="x_title">
-            <h2>Plain Page</h2>
-            <ul class="nav navbar-right panel_toolbox">
-              <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6 col-sm-6 col-xs-12">
+      <div class="x_panel">
+        <div class="x_title">
+          <h2>Upload New Invoice</h2>
+          <ul class="nav navbar-right panel_toolbox">
+            <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+            </li>
+            <li class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-wrench"></i></a>
+              <ul class="dropdown-menu" role="menu">
+                <li><a href="#">Settings 1</a>
+                </li>
+                <li><a href="#">Settings 2</a>
+                </li>
+              </ul>
+            </li>
+            <li><a class="close-link"><i class="fa fa-close"></i></a>
+            </li>
+          </ul>
+          <div class="clearfix"></div>
+        </div>
+        <div class="x_content">
+          <p>Drag file to the box below or click to select files. This will
+          upload a new invoice to TEA.</p>
+          <form action="form_upload.html" class="dropzone dz-clickable">
+            <div class="dz-default dz-message">
+              <span>Drop files here to upload</span>
+            </div>
+          </form>
+          <br>
+          <br>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6 col-sm-6 col-xs-12">
+      <div class="x_panel">
+        <div class="x_title">
+          <h2>Recent Activities <small>History</small></h2>
+          <ul class="nav navbar-right panel_toolbox">
+            <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+            </li>
+            <li><a class="close-link"><i class="fa fa-close"></i></a>
+            </li>
+          </ul>
+          <div class="clearfix"></div>
+        </div>
+        <div class="x_content">
+          <div class="dashboard-widget-content">
+
+            <ul class="list-unstyled timeline widget">
+              <li>
+                <div class="block">
+                  <div class="block_content">
+                    <h2 class="title">
+                      <a>Purchase order DSASA1213 downloaded by User</a>
+                    </h2>
+                    <div class="byline">
+                      <span>13 hours ago</span> by <a>Jane Smith</a>
+                    </div>
+                  </div>
+                </div>
               </li>
-              <li class="dropdown">
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-wrench"></i></a>
-                <ul class="dropdown-menu" role="menu">
-                  <li><a href="#">Settings 1</a>
-                  </li>
-                  <li><a href="#">Settings 2</a>
-                  </li>
-                </ul>
+              <li>
+                <div class="block">
+                  <div class="block_content">
+                    <h2 class="title">
+                      <a>Invoice 13332423 uploaded by User</a>
+                    </h2>
+                    <div class="byline">
+                      <span>13 hours ago</span> by <a>Jane Smith</a>
+                    </div>
+                  </div>
+                </div>
               </li>
-              <li><a class="close-link"><i class="fa fa-close"></i></a>
+              <li>
+                <div class="block">
+                  <div class="block_content">
+                    <h2 class="title">
+                      <a>New purchase order EWAD13244 received from TEA</a>
+                    </h2>
+                    <div class="byline">
+                      <span>13 hours ago</span> by <a>Jane Smith</a>
+                    </div>
+                  </div>
+                </div>
+              </li>
+              <li>
+                <div class="block">
+                  <div class="block_content">
+                    <h2 class="title">
+                      <a>Invoice 13332422 acknowledged as received by TEA</a>
+                    </h2>
+                    <div class="byline">
+                      <span>13 hours ago</span> by <a>Jane Smith</a>
+                    </div>
+                  </div>
+                </div>
+              </li>
+              <li>
+                <div class="block">
+                  <div class="block_content">
+                    <h2 class="title">
+                      <a>Invoice 13332422 acknowledged as received by TEA</a>
+                    </h2>
+                    <div class="byline">
+                      <span>13 hours ago</span> by <a>Jane Smith</a>
+                    </div>
+                  </div>
+                </div>
               </li>
             </ul>
-            <div class="clearfix"></div>
-          </div>
-          <div class="x_content">
-              Add content to the page ...
           </div>
         </div>
       </div>
@@ -54,4 +321,8 @@
   </div>
 </div>
 <!-- /page content -->
+{% endblock %}
+
+{% block body_js %}
+  <script src="{% static "vendors/dropzone/dist/min/dropzone.min.js" %}"></script>
 {% endblock %}
