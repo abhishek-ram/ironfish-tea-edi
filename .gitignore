@@ -93,3 +93,4 @@ ENV/
 .idea
 db*
 settings.py
+botssys/
