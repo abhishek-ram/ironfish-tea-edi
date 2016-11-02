@@ -16,7 +16,9 @@ Including another URLconf
 from django.conf.urls import url
 from django.contrib import admin
 from django.contrib.auth.views import login, logout
-from .core.views import index, CreatePurchaseOrder
+from .core.views import index
+from .core.views import CreatePurchaseOrder
+from .core.views import PurchaseOrderList, PurchaseOrderDetail
 
 urlpatterns = [
     # URLs for the django admin site
@@ -26,10 +28,15 @@ urlpatterns = [
     url(r'^index/', index, name='index'),
     url(r'^login/$', login, name='login'),
     url(r'^logout/$', logout, {'next_page': '/index/'}, name='logout'),
+    url(r'^purchase_orders/$', PurchaseOrderList.as_view(), name='po-list'),
+    url(r'^purchase_orders/(?P<pk>[a-zA-Z0-9]+)/$',
+        PurchaseOrderDetail.as_view(),
+        name='po-detail'),
 
     # URLs for the TEAEDI REST API
-    url(r'^api/purchase_order', CreatePurchaseOrder.as_view(),
-        name='purchase_order'),
+    url(r'^api/purchase_order',
+        CreatePurchaseOrder.as_view(),
+        name='po-create'),
 
     url(r'^.*', index),
 ] 

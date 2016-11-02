@@ -2,29 +2,29 @@ from __future__ import unicode_literals
 from django.db import models
 
 
-# class School(models.Model):
-#     isd_name = models.CharField(max_length=100)
-#     isd_code = models.CharField(max_length=30)
-#     district_enrollment = models.CharField(max_length=30)
-#     order = models.IntegerField()
-#     region = models.IntegerField()
-#     sales_id = models.CharField(max_length=10)
-#     rsm = models.CharField(max_length=30)
-#     address_line1 = models.TextField(max_length=100)
-#     address_line2 = models.TextField(max_length=100)
-#     city = models.CharField(max_length=30)
-#     state = models.CharField(max_length=2)
-#     zip = models.CharField(max_length=10)
-#     contact_name = models.CharField(max_length=30)
-#     contact_phone = models.CharField(max_length=30)
-#     contact_fax = models.CharField(max_length=30)
-#     contact_email = models.CharField(max_length=100)
-#     notes = models.TextField(max_length=100)
-#
-#
-# class Salesperson(models.Model):
-#     school = models.ForeignKey(School, on_delete=models.CASCADE)
-#     name = models.CharField(max_length=30)
+class School(models.Model):
+    isd_name = models.CharField(max_length=100)
+    isd_code = models.CharField(max_length=30)
+    district_enrollment = models.CharField(max_length=30)
+    order = models.IntegerField()
+    region = models.IntegerField()
+    sales_id = models.CharField(max_length=10)
+    rsm = models.CharField(max_length=30)
+    address_line1 = models.TextField(max_length=100)
+    address_line2 = models.TextField(max_length=100)
+    city = models.CharField(max_length=30)
+    state = models.CharField(max_length=2)
+    zip = models.CharField(max_length=10)
+    contact_name = models.CharField(max_length=30)
+    contact_phone = models.CharField(max_length=30)
+    contact_fax = models.CharField(max_length=30)
+    contact_email = models.CharField(max_length=100)
+    notes = models.TextField(max_length=100)
+
+
+class Salesperson(models.Model):
+    school = models.ForeignKey(School, on_delete=models.CASCADE)
+    name = models.CharField(max_length=30)
 
 
 class PurchaseOrder(models.Model):
@@ -55,8 +55,8 @@ class PurchaseOrder(models.Model):
     contact_fax = models.CharField(max_length=30)
     contact_email = models.CharField(max_length=100)
     owed_by_isd = models.DecimalField(
-        max_digits=20, decimal_places=4, null=True)
-    extra = models.DecimalField(max_digits=20, decimal_places=4, null=True)
+        max_digits=20, decimal_places=2, null=True)
+    extra = models.DecimalField(max_digits=20, decimal_places=2, null=True)
 
     def __str__(self):
         return self.order_id
@@ -78,10 +78,10 @@ class PurchaseOrderLine(models.Model):
     quantity = models.IntegerField()
     quantity_uom = models.CharField(
         max_length=2, choices=QUANTITY_UOM_CHOICES)
-    unit_price = models.DecimalField(max_digits=20, decimal_places=4)
+    unit_price = models.DecimalField(max_digits=20, decimal_places=2)
     unit_price_code = models.CharField(
         max_length=2, choices=PRICE_CODE_CHOICES)
-    total_price = models.DecimalField(max_digits=20, decimal_places=4)
+    total_price = models.DecimalField(max_digits=20, decimal_places=2)
     ship_date = models.DateField(null=True)
     isbn = models.CharField(max_length=30)
     student_edition = models.CharField(max_length=30)
