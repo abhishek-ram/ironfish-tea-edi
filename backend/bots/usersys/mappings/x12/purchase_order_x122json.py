@@ -14,7 +14,9 @@ def main(inn, out):
 
     order_date = inn.get({'BOTSID': 'ST'}, {'BOTSID': 'BEG', 'BEG05.02': None}) + \
                  inn.get({'BOTSID': 'ST'}, {'BOTSID': 'BEG', 'BEG05.01': None})
-    out.put({'BOTSID': 'Header', 'OrderDate': order_date})
+    out.put({'BOTSID': 'Header',
+             'OrderDate': transform.datemask(
+                 order_date, 'YYYYMMDD', 'YYYY-MM-DD')})
 
     out.put({'BOTSID': 'Header',
              'RequisitionNumber': inn.get({'BOTSID': 'ST'},
@@ -27,7 +29,11 @@ def main(inn, out):
 
     if ship_date_begin and ship_date_begin_ce:
         out.put({'BOTSID': 'Header',
-                 'RequestedShipEarliest': ship_date_begin_ce + ship_date_begin})
+                 'RequestedShipEarliest': transform.datemask(
+                     ship_date_begin_ce + ship_date_begin,
+                     'YYYYMMDD',
+                     'YYYY-MM-DD')
+                 })
 
     ship_date_end = inn.get({'BOTSID': 'ST'},
                             {'BOTSID': 'DTM', 'DTM01': '084', 'DTM02': None})
@@ -36,7 +42,11 @@ def main(inn, out):
 
     if ship_date_end and ship_date_end_ce:
         out.put({'BOTSID': 'Header',
-                 'RequestedShipLatest': ship_date_end_ce + ship_date_end})
+                 'RequestedShipLatest': transform.datemask(
+                     ship_date_end_ce + ship_date_end,
+                     'YYYYMMDD',
+                     'YYYY-MM-DD')
+                 })
 
     for n1 in inn.getloop({'BOTSID': 'ST'}, {'BOTSID': 'N1'}):
         address = out.putloop({'BOTSID': 'Header'}, {'BOTSID': 'Address'})

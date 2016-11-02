@@ -94,3 +94,4 @@ ENV/
 db*
 settings.py
 botssys/
+migrations/

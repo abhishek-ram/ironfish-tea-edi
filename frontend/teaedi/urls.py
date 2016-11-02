@@ -16,16 +16,20 @@ Including another URLconf
 from django.conf.urls import url
 from django.contrib import admin
 from django.contrib.auth.views import login, logout
-from teaedi.core.views import index
+from .core.views import index, CreatePurchaseOrder
 
 urlpatterns = [
     # URLs for the django admin site
     url(r'^admin/', admin.site.urls),
 
-    # URLs for the teaedi app
+    # URLs for the TEAEDI app
     url(r'^index/', index, name='index'),
     url(r'^login/$', login, name='login'),
     url(r'^logout/$', logout, {'next_page': '/index/'}, name='logout'),
+
+    # URLs for the TEAEDI REST API
+    url(r'^api/purchase_order', CreatePurchaseOrder.as_view(),
+        name='purchase_order'),
 
     url(r'^.*', index),
 ] 

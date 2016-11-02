@@ -20,10 +20,10 @@ recorddefs = {
         ['ReceiverId', 'M', 35, 'AN'],
         ['OrderType', 'M', 3, 'AN'],
         ['OrderNumber', 'M', 35, 'AN'],
-        ['OrderDate', 'M', (8,8), 'D'],
+        ['OrderDate', 'M', 20, 'AN'],
         ['RequisitionNumber', 'C', 35, 'AN'],
-        ['RequestedShipEarliest', 'C', (8,8), 'D'],
-        ['RequestedShipLatest', 'C', (8,8), 'D'],
+        ['RequestedShipEarliest', 'C', 20, 'AN'],
+        ['RequestedShipLatest', 'C', 20, 'AN'],
     ],
     'Address': [
         ['BOTSID', 'M', 10, 'A'],
