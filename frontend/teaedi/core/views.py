@@ -1,77 +1,17 @@
 from __future__ import unicode_literals
 from django.views.generic import ListView, DetailView
+from django.contrib.messages.views import SuccessMessageMixin
+from django.views.generic import CreateView, DeleteView, UpdateView
+from django.urls import reverse_lazy
+from django.http import HttpResponseRedirect
 from django.shortcuts import render
-from django.contrib.auth.decorators import login_required
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework.parsers import JSONParser
-from rest_framework.authentication import TokenAuthentication
-from .models import PurchaseOrder, PurchaseOrderLine
-from decimal import Decimal
+from django.contrib import messages
+from .models import PurchaseOrder
+from .models import School, Salesperson
 
 
-@login_required()
 def index(request):
     return render(request, 'core/index.html')
-
-
-class CreatePurchaseOrder(APIView):
-    authentication_classes = (TokenAuthentication,)
-    parser_classes = (JSONParser,)
-
-    def post(self, request, format=None):
-        po = PurchaseOrder(
-            order_id='TEA%s' % request.data['Header']['OrderNumber'],
-            order_date=request.data['Header']['OrderDate'],
-            customer_po=request.data['Header']['OrderNumber'],
-            contract=request.data['Header']['RequisitionNumber'],
-        )
-        po.ship_date = request.data['Header'].get('RequestedShipLatest') or \
-                       request.data['Header'].get('RequestedShipEarliest')
-
-        for address in request.data['Header']['Address']:
-            if address['AddressType'] == 'ST':
-                po.isd_name = address['Name']
-                po.isd_code = address['Code']
-                po.address_line1 = address['AddressLine1']
-                if address.get('AddressLine2'):
-                    po.address_line2 = address['AddressLine1']
-                po.city = address['City']
-                po.state = address['StateCode']
-                po.zip = address['PostalCode']
-                po.contact_name = address['ContactName']
-                po.contact_phone = address['ContactPhone']
-                po.contact_email = address['ContactEmail']
-                po.contact_fax = address['ContactFax']
-        po.save()
-
-        order_total, order_total_extra = 0, 0
-        for line in request.data['Header']['LineItem']:
-            line_total = Decimal(
-                line['UnitPrice']) * Decimal(line['QuantityOrdered'])
-            order_total += line_total
-            order_total_extra += (
-                line_total + Decimal(line['SchoolDistrictOwes']))
-
-            PurchaseOrderLine.objects.create(
-                purchase_order=po,
-                sequence=line['LineNumber'],
-                quantity=line['QuantityOrdered'],
-                quantity_uom=line['QuantityUOM'],
-                unit_price=line['UnitPrice'],
-                unit_price_code=line['UnitPriceCode'],
-                total_price=line_total,
-                ship_date=po.ship_date,
-                isbn=line['ISBN'],
-                student_edition=line['StudentEdition'],
-                student_edition_cost=line['StudentEditionCost'],
-                school_district_owes=line['SchoolDistrictOwes']
-            )
-
-        po.owed_by_isd = order_total
-        po.extra = order_total_extra
-        po.save()
-        return Response({'status': 'OK', 'id': po.pk})
 
 
 class PurchaseOrderList(ListView):
@@ -81,9 +21,69 @@ class PurchaseOrderList(ListView):
 class PurchaseOrderDetail(DetailView):
     model = PurchaseOrder
 
-    # def get_context_data(self, **kwargs):
-    #     # Call the base implementation first to get a context
-    #     context = super(PurchaseOrderDetail, self).get_context_data(**kwargs)
-    #     # Add in a QuerySet of all the books
-    #     context['po_lines'] = Book.objects.all()
-    #     return context
+    def get_context_data(self, **kwargs):
+        # Call the base implementation first to get a context
+        context = super(PurchaseOrderDetail, self).get_context_data(**kwargs)
+        context['school'] = School.objects.filter(
+            isd_code=self.object.isd_code.lstrip('0')).first()
+        context['salesperson'] = Salesperson.objects.filter(
+            school=context['school']).first()
+        return context
+
+
+class SchoolList(ListView):
+    model = School
+
+
+class SalespersonList(ListView):
+    model = Salesperson
+
+
+class SalespersonCreate(SuccessMessageMixin, CreateView):
+    model = Salesperson
+    fields = ['name', 'school']
+    success_url = reverse_lazy('salesperson-list')
+    success_message = 'Salesperson "%(name)s" has been mapped to ' \
+                      'school "%(school)s" successfully'
+
+    def get_context_data(self, **kwargs):
+        # Call the base implementation first to get a context
+        context = super(SalespersonCreate, self).get_context_data(**kwargs)
+        valid_schools = []
+        for school in School.objects.all():
+            if not Salesperson.objects.filter(school=school).exists():
+                valid_schools.append((school.pk, school.isd_name))
+        context['form'].fields['school'].choices = valid_schools
+        return context
+
+
+class SalespersonUpdate(SuccessMessageMixin, UpdateView):
+    model = Salesperson
+    fields = ['name', 'school']
+    success_url = reverse_lazy('salesperson-list')
+    success_message = 'Salesperson "%(name)s" has been mapped to ' \
+                      'school "%(school)s" successfully'
+
+    def get_context_data(self, **kwargs):
+        # Call the base implementation first to get a context
+        context = super(SalespersonUpdate, self).get_context_data(**kwargs)
+        valid_schools = [(self.object.school.pk, self.object.school.isd_name)]
+        for school in School.objects.all():
+            if not Salesperson.objects.filter(school=school).exists():
+                valid_schools.append((school.pk, school.isd_name))
+        context['form'].fields['school'].choices = valid_schools
+        return context
+
+
+class SalespersonDelete(DeleteView):
+    model = Salesperson
+    success_url = reverse_lazy('salesperson-list')
+
+    def delete(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        messages.success(
+            request, 'Mapping deleted between Salesperson "{0.name}" and '
+                     'school "{0.school}" successfully'.format(self.object)
+        )
+        self.object.delete()
+        return HttpResponseRedirect(self.get_success_url())

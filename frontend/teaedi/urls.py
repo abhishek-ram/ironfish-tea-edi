@@ -1,42 +1,41 @@
-"""teaedi URL Configuration
-
-The `urlpatterns` list routes URLs to views. For more information please see:
-    https://docs.djangoproject.com/en/1.10/topics/http/urls/
-Examples:
-Function views
-    1. Add an import:  from my_app import views
-    2. Add a URL to urlpatterns:  url(r'^$', views.home, name='home')
-Class-based views
-    1. Add an import:  from other_app.views import Home
-    2. Add a URL to urlpatterns:  url(r'^$', Home.as_view(), name='home')
-Including another URLconf
-    1. Import the include() function: from django.conf.urls import url, include
-    2. Add a URL to urlpatterns:  url(r'^blog/', include('blog.urls'))
-"""
 from django.conf.urls import url
 from django.contrib import admin
 from django.contrib.auth.views import login, logout
-from .core.views import index
-from .core.views import CreatePurchaseOrder
-from .core.views import PurchaseOrderList, PurchaseOrderDetail
+from django.contrib.auth.decorators import login_required
+from .core import views, apis
 
 urlpatterns = [
     # URLs for the django admin site
     url(r'^admin/', admin.site.urls),
 
     # URLs for the TEAEDI app
-    url(r'^index/', index, name='index'),
+    url(r'^index/', login_required(views.index), name='index'),
     url(r'^login/$', login, name='login'),
     url(r'^logout/$', logout, {'next_page': '/index/'}, name='logout'),
-    url(r'^purchase_orders/$', PurchaseOrderList.as_view(), name='po-list'),
+    url(r'^purchase_orders/$',
+        login_required(views.PurchaseOrderList.as_view()),
+        name='po-list'),
     url(r'^purchase_orders/(?P<pk>[a-zA-Z0-9]+)/$',
-        PurchaseOrderDetail.as_view(),
+        login_required(views.PurchaseOrderDetail.as_view()),
         name='po-detail'),
+    url(r'school/$', views.SchoolList.as_view(), name='school-list'),
+    url(r'salesperson/$',
+        login_required(views.SalespersonList.as_view()),
+        name='salesperson-list'),
+    url(r'salesperson/add/$',
+        login_required(views.SalespersonCreate.as_view()),
+        name='salesperson-add'),
+    url(r'salesperson/(?P<pk>[0-9]+)/$',
+        login_required(views.SalespersonUpdate.as_view()),
+        name='salesperson-update'),
+    url(r'salesperson/(?P<pk>[0-9]+)/delete/$',
+        login_required(views.SalespersonDelete.as_view()),
+        name='salesperson-delete'),
 
     # URLs for the TEAEDI REST API
     url(r'^api/purchase_order',
-        CreatePurchaseOrder.as_view(),
+        apis.CreatePurchaseOrder.as_view(),
         name='po-create'),
 
-    url(r'^.*', index),
+    url(r'^.*', views.index),
 ] 

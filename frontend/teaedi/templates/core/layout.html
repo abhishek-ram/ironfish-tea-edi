@@ -16,8 +16,14 @@
 
     <!-- Bootstrap -->
     <link href="{% static "vendors/bootstrap/dist/css/bootstrap.min.css" %}" rel="stylesheet">
+
     <!-- Font Awesome -->
     <link href="{% static "vendors/font-awesome/css/font-awesome.min.css" %}" rel="stylesheet">
+
+    <!-- PNotify -->
+    <link href="{% static "vendors/pnotify/dist/pnotify.css" %}" rel="stylesheet">
+    <link href="{% static "vendors/pnotify/dist/pnotify.buttons.css" %}" rel="stylesheet">
+    <link href="{% static "vendors/pnotify/dist/pnotify.nonblock.css" %}" rel="stylesheet">
 
     <!-- Custom Theme Style -->
     <link href="{% static "css/custom.min.css" %}" rel="stylesheet">
@@ -46,10 +52,12 @@
               <div class="menu_section">
                 <h3>General</h3>
                 <ul class="nav side-menu">
-                  <li><a  href="{% url 'index' %}"><i class="fa fa-home" ></i> Home </a></li>
-                  <li><a  href="{% url 'po-list' %}"><i class="fa fa-newspaper-o"></i> Purchase Orders </a></li>
-                  <li><a><i class="fa fa-money" href="#" ></i> Invoices </a></li>
-                  <li><a><i class="fa fa-history" href="#" ></i> History </a></li>
+                  <li><a href="{% url 'index' %}"><i class="fa fa-home" ></i> Home </a></li>
+                  <li><a href="{% url 'school-list' %}"><i class="fa fa-institution" ></i> Schools </a></li>
+                  <li><a href="{% url 'salesperson-list' %}"><i class="fa fa-users"></i> Sales Persons </a></li>
+                  <li><a href="{% url 'po-list' %}"><i class="fa fa-newspaper-o"></i> Purchase Orders </a></li>
+                  <li><a href="#" ><i class="fa fa-money"></i> Invoices </a></li>
+                  <li><a href="#" ><i class="fa fa-history"></i> History </a></li>
                 </ul>
               </div>
 
@@ -161,6 +169,14 @@
         <!-- /footer content -->
       </div>
     </div>
+
+    <div class="notification">
+      <ul>
+        {% for message in messages %}
+          <li class="{{ message.level_tag }}">{{ message }}</li>
+        {% endfor %}
+      </ul>
+    </div>
       <!-- jQuery -->
     <script src="{% static "vendors/jquery/dist/jquery.min.js" %}"></script>
     <!-- Bootstrap -->
@@ -170,8 +186,31 @@
     <!-- NProgress -->
     <script src="{% static "vendors/nprogress/nprogress.js" %}"></script>
 
+    <!-- PNotify -->
+    <script src="{% static "vendors/pnotify/dist/pnotify.js" %}"></script>
+    <script src="{% static "vendors/pnotify/dist/pnotify.buttons.js" %}"></script>
+    <script src="{% static "vendors/pnotify/dist/pnotify.nonblock.js" %}"></script>
+
     <!-- Custom Theme Scripts -->
     <script src="{% static "js/custom.min.js" %}"></script>
+
+    <!-- PNotify -->
+    <script>
+      $(document).ready(function() {
+        $(".notification").hide();
+        var notifications = $(".notification li");
+        notifications.each(function(idx, li) {
+          var notification = $(li);
+          new PNotify({
+              title: 'New Message',
+              text: notification.text(),
+              type: notification.attr('class'),
+              styling: 'bootstrap3'
+          });
+        });
+      });
+    </script>
+    <!-- /PNotify -->
     {% block body_js %}
     {% endblock body_js %}
   </body>

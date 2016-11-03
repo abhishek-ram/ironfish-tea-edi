@@ -21,6 +21,12 @@ class School(models.Model):
     contact_email = models.CharField(max_length=100)
     notes = models.TextField(max_length=100)
 
+    def __str__(self):
+        return self.isd_name
+
+    class Meta:
+        ordering = ['isd_name']
+
 
 class Salesperson(models.Model):
     school = models.ForeignKey(School, on_delete=models.CASCADE)
