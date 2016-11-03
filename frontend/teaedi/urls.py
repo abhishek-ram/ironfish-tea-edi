@@ -32,6 +32,16 @@ urlpatterns = [
         login_required(views.SalespersonDelete.as_view()),
         name='salesperson-delete'),
 
+    url(r'watcher/$',
+        login_required(views.WatcherList.as_view()),
+        name='watcher-list'),
+    url(r'watcher/add/$',
+        login_required(views.WatcherCreate.as_view()),
+        name='watcher-add'),
+    url(r'watcher/(?P<pk>[0-9]+)/$',
+        login_required(views.WatcherUpdate.as_view()),
+        name='watcher-update'),
+
     # URLs for the TEAEDI REST API
     url(r'^api/purchase_order',
         apis.CreatePurchaseOrder.as_view(),

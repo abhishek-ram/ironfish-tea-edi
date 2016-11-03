@@ -7,7 +7,8 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.contrib import messages
 from .models import PurchaseOrder
-from .models import School, Salesperson
+from .models import School, Salesperson, Watcher
+from .forms import WatcherForm
 
 
 def index(request):
@@ -87,3 +88,22 @@ class SalespersonDelete(DeleteView):
         )
         self.object.delete()
         return HttpResponseRedirect(self.get_success_url())
+
+
+class WatcherList(ListView):
+    model = Watcher
+
+
+class WatcherCreate(SuccessMessageMixin, CreateView):
+    model = Watcher
+    form_class = WatcherForm
+    success_url = reverse_lazy('watcher-list')
+    success_message = 'Watcher "%(email_id)s" has been created successfully'
+
+
+class WatcherUpdate(SuccessMessageMixin, UpdateView):
+    model = Watcher
+    form_class = WatcherForm
+    success_url = reverse_lazy('watcher-list')
+    success_message = 'Watcher "%(email_id)s" has been updated successfully'
+

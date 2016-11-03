@@ -1,6 +1,11 @@
 {% extends 'core/layout.html' %}
 {% load staticfiles %}
 
+{% block head_css %}
+  <!-- Select2 -->
+  <link href="{% static "/vendors/select2/dist/css/select2.min.css" %}" rel="stylesheet">
+{% endblock %}
+
 {% block body_content %}
 <!-- page content -->
 <div class="right_col" role="main">
@@ -33,9 +38,11 @@
                 <label class="control-label col-md-3" for="id_school">School <span class="required">*</span>
                 </label>
                 <div class="col-md-7">
-                  <select id="id_school" name="school" required="required" class="form-control col-md-7 col-xs-12" aria-describedby="helpBlock2">
+                  <select id="id_school" name="school" required="required"
+                          class="form-control col-md-7 col-xs-12 select_school"
+                          aria-describedby="helpBlock2">
                     {% for k, v in form.fields.school.choices %}
-                       <option value="{{ k }}"{% if form.instance.school == k %} selected{% endif %}>{{ v }}</option>
+                       <option value="{{ k }}" {% if form.instance.school == k %} selected{% endif %}>{{ v }}</option>
                     {% endfor %}
                   </select>
                   <span class="help-block" id="helpBlock2">{{form.school.errors}}</span>
@@ -61,4 +68,18 @@
     <!-- po table -->
 </div>
 <!-- /page content -->
+{% endblock %}
+
+{% block body_js %}
+    <!-- Select2 -->
+    <script src="{% static "vendors/select2/dist/js/select2.full.min.js" %}"></script>
+    <script>
+      $(document).ready(function() {
+        $(".select_school").select2({
+          placeholder: "Select a school",
+          allowClear: false
+        });
+      });
+    </script>
+    <!-- /Select2 -->
 {% endblock %}

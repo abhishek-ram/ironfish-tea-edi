@@ -38,7 +38,7 @@ class PurchaseOrder(models.Model):
         ('O', 'Open'),
         ('P', 'Processed'),
         ('C', 'Cancelled'),
-        ('S', 'Shipped and Invoiced'),
+        ('M', 'Modified'),
     )
 
     order_id = models.CharField(max_length=30, primary_key=True)
@@ -96,3 +96,22 @@ class PurchaseOrderLine(models.Model):
 
     def __str__(self):
         return '{} {}'.format(self.purchase_order, self.sequence)
+
+
+class Watcher(models.Model):
+    EVENT_CHOICES = (
+        ('PO_NEW', 'New Purchase Order Imported'),
+        ('PO_UPD', 'Purchase Order Updated/Cancelled'),
+        ('SI_PRO', 'Shipping and Invoice Document Processed'),
+        ('SI_ACK', 'Shipping and Invoice Document Acknowledged')
+    )
+
+    email_id = models.EmailField(unique=True)
+    events = models.CharField(max_length=200)
+
+    def get_events_display(self):
+        events_display = []
+        event_choices_dict = {k: v for k, v in self.EVENT_CHOICES}
+        for event in eval(self.events):
+            events_display.append(event_choices_dict[event])
+        return events_display

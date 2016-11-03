@@ -57,7 +57,12 @@
                   <li><a href="{% url 'salesperson-list' %}"><i class="fa fa-users"></i> Sales Persons </a></li>
                   <li><a href="{% url 'po-list' %}"><i class="fa fa-newspaper-o"></i> Purchase Orders </a></li>
                   <li><a href="#" ><i class="fa fa-money"></i> Invoices </a></li>
-                  <li><a href="#" ><i class="fa fa-history"></i> History </a></li>
+                  <!--<li><a href="#" ><i class="fa fa-history"></i> History </a></li>-->
+                  <li><a><i class="fa fa-cogs"></i>Settings <span class="fa fa-chevron-down"></span></a>
+                    <ul class="nav child_menu">
+                      <li><a href="{% url 'watcher-list' %}">Notifications</a></li>
+                    </ul>
+                  </li>
                 </ul>
               </div>
 
@@ -103,55 +108,55 @@
                   </ul>
                 </li>
 
-                <li role="presentation" class="dropdown">
-                  <a href="javascript:;" class="dropdown-toggle info-number" data-toggle="dropdown" aria-expanded="false">
-                    <i class="fa fa-envelope-o"></i>
-                    <span class="badge bg-green">6</span>
-                  </a>
-                  <ul id="menu1" class="dropdown-menu list-unstyled msg_list" role="menu">
-                    <li>
-                      <a>
-                        <span>
-                          <span>Admin</span>
-                          <span class="time">3 mins ago</span>
-                        </span>
-                        <span class="message">
-                          New Purchase Order XXGSDAD has been imported and available for download.
-                        </span>
-                      </a>
-                    </li>
-                    <li>
-                      <a>
-                        <span>
-                          <span>Admin</span>
-                          <span class="time">3 mins ago</span>
-                        </span>
-                        <span class="message">
-                          New Purchase Order XXGSDAD has been imported and available for download.
-                        </span>
-                      </a>
-                    </li>
-                    <li>
-                      <a>
-                        <span>
-                          <span>Admin</span>
-                          <span class="time">3 mins ago</span>
-                        </span>
-                        <span class="message">
-                          New Purchase Order XXGSDAD has been imported and available for download.
-                        </span>
-                      </a>
-                    </li>
-                    <li>
-                      <div class="text-center">
-                        <a>
-                          <strong>See All Alerts</strong>
-                          <i class="fa fa-angle-right"></i>
-                        </a>
-                      </div>
-                    </li>
-                  </ul>
-                </li>
+                <!--<li role="presentation" class="dropdown">-->
+                  <!--<a href="javascript:;" class="dropdown-toggle info-number" data-toggle="dropdown" aria-expanded="false">-->
+                    <!--<i class="fa fa-envelope-o"></i>-->
+                    <!--<span class="badge bg-green">6</span>-->
+                  <!--</a>-->
+                  <!--<ul id="menu1" class="dropdown-menu list-unstyled msg_list" role="menu">-->
+                    <!--<li>-->
+                      <!--<a>-->
+                        <!--<span>-->
+                          <!--<span>Admin</span>-->
+                          <!--<span class="time">3 mins ago</span>-->
+                        <!--</span>-->
+                        <!--<span class="message">-->
+                          <!--New Purchase Order XXGSDAD has been imported and available for download.-->
+                        <!--</span>-->
+                      <!--</a>-->
+                    <!--</li>-->
+                    <!--<li>-->
+                      <!--<a>-->
+                        <!--<span>-->
+                          <!--<span>Admin</span>-->
+                          <!--<span class="time">3 mins ago</span>-->
+                        <!--</span>-->
+                        <!--<span class="message">-->
+                          <!--New Purchase Order XXGSDAD has been imported and available for download.-->
+                        <!--</span>-->
+                      <!--</a>-->
+                    <!--</li>-->
+                    <!--<li>-->
+                      <!--<a>-->
+                        <!--<span>-->
+                          <!--<span>Admin</span>-->
+                          <!--<span class="time">3 mins ago</span>-->
+                        <!--</span>-->
+                        <!--<span class="message">-->
+                          <!--New Purchase Order XXGSDAD has been imported and available for download.-->
+                        <!--</span>-->
+                      <!--</a>-->
+                    <!--</li>-->
+                    <!--<li>-->
+                      <!--<div class="text-center">-->
+                        <!--<a>-->
+                          <!--<strong>See All Alerts</strong>-->
+                          <!--<i class="fa fa-angle-right"></i>-->
+                        <!--</a>-->
+                      <!--</div>-->
+                    <!--</li>-->
+                  <!--</ul>-->
+                <!--</li>-->
               </ul>
             </nav>
           </div>
