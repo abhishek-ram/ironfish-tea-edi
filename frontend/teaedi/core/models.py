@@ -11,7 +11,7 @@ class School(models.Model):
     sales_id = models.CharField(max_length=10)
     rsm = models.CharField(max_length=30)
     address_line1 = models.TextField(max_length=100)
-    address_line2 = models.TextField(max_length=100)
+    address_line2 = models.TextField(max_length=100, null=True, blank=True)
     city = models.CharField(max_length=30)
     state = models.CharField(max_length=2)
     zip = models.CharField(max_length=10)
@@ -51,6 +51,8 @@ class PurchaseOrder(models.Model):
     contract = models.CharField(max_length=30)
     isd_name = models.CharField(max_length=100)
     isd_code = models.CharField(max_length=30)
+    sales_id = models.CharField(max_length=30, null=True)
+    salesperson = models.CharField(max_length=30, null=True)
     address_line1 = models.TextField(max_length=100)
     address_line2 = models.TextField(max_length=100, null=True)
     city = models.CharField(max_length=30)
@@ -72,7 +74,8 @@ class PurchaseOrderLine(models.Model):
     QUANTITY_UOM_CHOICES = (
         ('BK', 'Book'),
         ('KT', 'Kit'),
-        ('SP', 'Software Product')
+        ('SP', 'Software Product'),
+        ('EA', 'EACH')
     )
     PRICE_CODE_CHOICES = (
         ('03', 'Contract'),
@@ -87,12 +90,18 @@ class PurchaseOrderLine(models.Model):
     unit_price = models.DecimalField(max_digits=20, decimal_places=2)
     unit_price_code = models.CharField(
         max_length=2, choices=PRICE_CODE_CHOICES)
-    total_price = models.DecimalField(max_digits=20, decimal_places=2)
+    sub_total = models.DecimalField(max_digits=20, decimal_places=2)
     ship_date = models.DateField(null=True)
     isbn = models.CharField(max_length=30)
     student_edition = models.CharField(max_length=30)
     student_edition_cost = models.CharField(max_length=30)
     school_district_owes = models.CharField(max_length=30)
+
+    # The below fields are needed for handling PO Changes.
+    original_quantity = models.IntegerField(null=True)
+    cancelled = models.BooleanField(default=False)
+    modified = models.BooleanField(default=False)
+    added = models.BooleanField(default=False)
 
     def __str__(self):
         return '{} {}'.format(self.purchase_order, self.sequence)

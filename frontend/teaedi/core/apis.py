@@ -1,16 +1,21 @@
+from __future__ import unicode_literals
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.parsers import JSONParser
 from rest_framework.authentication import TokenAuthentication
-from .models import PurchaseOrder, PurchaseOrderLine
+from django.core.mail import send_mail
+from django.template.loader import render_to_string
+from .models import PurchaseOrder, PurchaseOrderLine, Watcher
+from .models import School, Salesperson
 from decimal import Decimal
 
 
-class CreatePurchaseOrder(APIView):
+class CRUDPurchaseOrder(APIView):
     authentication_classes = (TokenAuthentication,)
     parser_classes = (JSONParser,)
 
-    def post(self, request, format=None):
+    def post(self, request):
+        """Endpoint for creating new purchase orders"""
         po = PurchaseOrder(
             order_id='TEA%s' % request.data['Header']['OrderNumber'],
             order_date=request.data['Header']['OrderDate'],
@@ -35,6 +40,14 @@ class CreatePurchaseOrder(APIView):
                 po.contact_phone = address['ContactPhone']
                 po.contact_email = address['ContactEmail']
                 po.contact_fax = address['ContactFax']
+                school = School.objects.filter(
+                    isd_code=address['Code'].lstrip('0')).first()
+                if school:
+                    po.sales_id = school.sales_id
+                    salesperson = Salesperson.objects.filter(
+                        school=school).first()
+                    if salesperson:
+                        po.salesperson = salesperson.name
         po.save()
 
         order_total, order_total_extra = 0, 0
@@ -49,10 +62,10 @@ class CreatePurchaseOrder(APIView):
                 purchase_order=po,
                 sequence=line['LineNumber'],
                 quantity=line['QuantityOrdered'],
-                quantity_uom=line['QuantityUOM'],
+                quantity_uom='EA',
                 unit_price=line['UnitPrice'],
                 unit_price_code=line['UnitPriceCode'],
-                total_price=line_total,
+                sub_total=line_total,
                 ship_date=po.ship_date,
                 isbn=line['ISBN'],
                 student_edition=line['StudentEdition'],
@@ -63,4 +76,98 @@ class CreatePurchaseOrder(APIView):
         po.owed_by_isd = order_total
         po.extra = order_total_extra
         po.save()
+
+        # Notify any watchers that are listening for New POs
+        watchers = [w.email_id for w in
+                    Watcher.objects.filter(events__contains='PO_NEW')]
+        if watchers:
+            email_body = render_to_string(
+                'emails/purchaseorder_new.html', {'po': po})
+            send_mail('New Purchase Order Notification',
+                      from_email='',
+                      recipient_list=watchers,
+                      message='',
+                      html_message=email_body)
         return Response({'status': 'OK', 'id': po.pk})
+
+    def put(self, request):
+        """Endpoint for updating existing purchase orders"""
+
+        # Fetch the original PO from the DB
+        po = PurchaseOrder.objects.filter(
+            customer_po=request.data['Header']['OrderNumber']).first()
+        if po:
+            # If PO exists go process each line in the PO change
+            email_context = {
+                'po': po,
+                'changed_lines': [],
+                'deleted_lines': [],
+                'added_lines': []
+            }
+            for line in request.data['Header']['LineItem']:
+                # Look for the line item in the original PO
+                po_line = PurchaseOrderLine.objects.filter(
+                    purchase_order=po, isbn=line['ISBN']).first()
+                if not po_line:
+                    line_total = Decimal(
+                        line['UnitPrice']) * Decimal(line['QuantityOrdered'])
+                    po_line = PurchaseOrderLine(
+                        purchase_order=po,
+                        sequence=line['LineNumber'],
+                        quantity=line['QuantityOrdered'],
+                        quantity_uom='EA',
+                        unit_price=line['UnitPrice'],
+                        unit_price_code=line['UnitPriceCode'],
+                        sub_total=line_total,
+                        ship_date=po.ship_date,
+                        isbn=line['ISBN'],
+                        student_edition=line['StudentEdition'],
+                        student_edition_cost=line['StudentEditionCost'],
+                        school_district_owes=line['SchoolDistrictOwes']
+                    )
+
+                if line['ChangeCode'] == 'DI':
+                    po.order_status = 'M'
+                    po_line.cancelled = True
+                    po_line.sub_total = 0
+                    po_line.save()
+                    email_context['deleted_lines'].append(po_line)
+                elif line['ChangeCode'] == 'CA':
+                    po.order_status = 'M'
+                    po_line.original_quantity = po_line.quantity
+                    po_line.quantity = line['QuantityOrdered']
+                    po_line.sub_total = Decimal(
+                        line['UnitPrice']) * Decimal(line['QuantityOrdered'])
+                    po_line.modified = True
+                    po_line.save()
+                    email_context['changed_lines'].append(po_line)
+                elif line['ChangeCode'] == 'AI':
+                    po.order_status = 'M'
+                    po_line.added = True
+                    po_line.save()
+                    email_context['added_lines'].append(po_line)
+
+            # Recalculate the total PO amount
+            po.owed_by_isd = reduce(
+                lambda x, y: x + y, [l.sub_total for l in po.lines.all()])
+
+            # If all items have been cancelled mark PO as cancelled
+            for line in po.lines.all():
+                if not line.cancelled:
+                    break
+            else:
+                po.order_status = 'C'
+            po.save()
+
+            # Notify any watchers that are listening for PO Changes
+            watchers = [w.email_id for w in
+                        Watcher.objects.filter(events__contains='PO_UPD')]
+            if watchers:
+                email_body = render_to_string(
+                    'emails/purchaseorder_change.html', email_context)
+                send_mail('Purchase Order Change Notification',
+                          from_email='',
+                          recipient_list=watchers,
+                          message='',
+                          html_message=email_body)
+        return Response({'status': 'OK'})

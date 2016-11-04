@@ -6,10 +6,10 @@ from .core import views, apis
 
 urlpatterns = [
     # URLs for the django admin site
-    url(r'^admin/', admin.site.urls),
+    url(r'^admin', admin.site.urls),
 
     # URLs for the TEAEDI app
-    url(r'^index/', login_required(views.index), name='index'),
+    url(r'^index/$', login_required(views.index), name='index'),
     url(r'^login/$', login, name='login'),
     url(r'^logout/$', logout, {'next_page': '/index/'}, name='logout'),
     url(r'^purchase_orders/$',
@@ -44,7 +44,7 @@ urlpatterns = [
 
     # URLs for the TEAEDI REST API
     url(r'^api/purchase_order',
-        apis.CreatePurchaseOrder.as_view(),
+        apis.CRUDPurchaseOrder.as_view(),
         name='po-create'),
 
     url(r'^.*', views.index),

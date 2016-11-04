@@ -22,15 +22,6 @@ class PurchaseOrderList(ListView):
 class PurchaseOrderDetail(DetailView):
     model = PurchaseOrder
 
-    def get_context_data(self, **kwargs):
-        # Call the base implementation first to get a context
-        context = super(PurchaseOrderDetail, self).get_context_data(**kwargs)
-        context['school'] = School.objects.filter(
-            isd_code=self.object.isd_code.lstrip('0')).first()
-        context['salesperson'] = Salesperson.objects.filter(
-            school=context['school']).first()
-        return context
-
 
 class SchoolList(ListView):
     model = School

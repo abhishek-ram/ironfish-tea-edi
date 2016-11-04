@@ -37,8 +37,6 @@
                       <br>{{ object.address_line1 }}
                       {% if object.address_line2 %}<br>{{ object.address_line2 }} {% endif %}
                       <br>{{ object.city}}, {{ object.state }} {{ object.zip }}
-                      <br>Phone: 1 (804) 123-9876
-                      <br>Email: ironadmin.com
                   </address>
                 </div>
                 <!-- /.col -->
@@ -47,9 +45,9 @@
                 </div>
                 <!-- /.col -->
                 <div class="col-sm-3 invoice-col">
-                  <b>Sales ID:</b> {{school.sales_id}}
+                  <b>Sales ID:</b> {{object.sales_id}}
                   <br>
-                  <b>Salesperson:</b> {{salesperson.name}}
+                  <b>Salesperson:</b> {{object.salesperson}}
                   <br>
                   <b>Ship Date:</b> {{object.ship_date|date:"m/d/Y"}}
                   <br>
@@ -63,6 +61,17 @@
                   <b>Phone:</b> {{object.contact_phone}}
                   <br>
                   <b>Customer PO:</b> {{object.customer_po}}
+                  <br>
+                  <b>Status:</b>
+                  {% if object.order_status == 'O' %}
+                    <span class="label label-primary">{{ object.get_order_status_display }}</span>
+                  {% elif object.order_status == 'P' %}
+                    <span class="label label-success">{{ object.get_order_status_display }}</span>
+                  {% elif object.order_status == 'C' %}
+                    <span class="label label-danger">{{ object.get_order_status_display }}</span>
+                  {% elif object.order_status == 'M' %}
+                    <span class="label label-warning">{{ object.get_order_status_display }}</span>
+                  {% endif %}
                 </div>
                 <!-- /.col -->
               </div>
@@ -76,6 +85,7 @@
                       <tr>
                         <th>Order #</th>
                         <th>Sequence</th>
+                        <th>Line Status</th>
                         <th>ISBN #</th>
                         <th style="width: 30%">ISBN Title</th>
                         <th>Line Qty</th>
@@ -89,12 +99,23 @@
                       <tr>
                           <td>{{ object.pk }}</td>
                           <td>{{ line.sequence }}</td>
+                          <td>
+                            {% if line.cancelled %}
+                              <span class="label label-danger">Cancelled</span>
+                            {% elif line.modified %}
+                              <span class="label label-warning">Modified</span>
+                            {% elif line.added %}
+                              <span class="label label-success">Added</span>
+                            {% else %}
+                              <span class="label label-primary">Original</span>
+                            {% endif %}
+                          </td>
                           <td>{{ line.isbn }}</td>
                           <td>Some Description Here</td>
                           <td>{{ line.quantity }}</td>
                           <td>{{ line.school_district_owes }}</td>
                           <td>{{ line.unit_price }}</td>
-                          <td>{{ line.total_price }}</td>
+                          <td>{{ line.sub_total }}</td>
                       </tr>
                     {% endfor %}
                     </tbody>

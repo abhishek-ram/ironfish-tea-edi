@@ -40,8 +40,12 @@
                     <td>
                       {% if po.order_status == 'O' %}
                         <span class="label label-primary">{{ po.get_order_status_display }}</span>
-                      {% else %}
-                        {{ po.get_order_status_display }}
+                      {% elif po.order_status == 'P' %}
+                        <span class="label label-success">{{ po.get_order_status_display }}</span>
+                      {% elif po.order_status == 'C' %}
+                        <span class="label label-danger">{{ po.get_order_status_display }}</span>
+                      {% elif po.order_status == 'M' %}
+                        <span class="label label-warning">{{ po.get_order_status_display }}</span>
                       {% endif %}
                     </td>
                     <td>{{ po.ship_date|date:"Y/m/d"  }}</td>
