@@ -14,7 +14,7 @@ def main(channeldict, filename, *args, **kwargs):
     }
     with open(filename, 'r') as content_file:
         json_data = content_file.read()
-        post_order = requests.post(url, headers=custom_headers, data=json_data)
+        post_order = requests.put(url, headers=custom_headers, data=json_data)
     post_order.raise_for_status()
 
 
