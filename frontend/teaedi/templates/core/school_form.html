@@ -1,0 +1,236 @@
+{% extends 'core/layout.html' %}
+{% load staticfiles %}
+
+{% block title %}TEAEDI Integration - Schools{% endblock %}
+
+{% block head_css %}
+  <!-- Select2 -->
+  <!--<link href="{% static "/vendors/select2/dist/css/select2.min.css" %}" rel="stylesheet">-->
+{% endblock %}
+
+{% block body_content %}
+<!-- page content -->
+<div class="right_col" role="main">
+
+    <div class="clearfix"></div>
+
+    <!-- po table -->
+    <div class="row">
+
+      <div class="col-md-12">
+        <div class="x_panel">
+          <div class="x_title">
+            <h3>Add or Update School</h3>
+            <div class="clearfix"></div>
+          </div>
+          <div class="x_content">
+            <br />
+            <form class="form-horizontal form-label-left" method="post">
+              {% csrf_token %}
+              <div class="row">
+                <div class="col-md-1 col-sm-12 col-xs-12 form-group">
+                      <label class="control-label"
+                             for="id_isd_name">School Name <span class="required">*</span>
+                      </label>
+                </div>
+                <div class="col-md-3 col-sm-12 col-xs-12 form-group">
+                      <input type="text" id="id_isd_name" value="{{form.instance.isd_name}}"
+                             required name="isd_name" class="form-control" >
+
+                </div>
+                <div class="col-md-1 col-sm-12 col-xs-12 form-group">
+                      <label class="control-label"
+                             for="id_isd_name">ISD Code <span class="required">*</span>
+                      </label>
+                </div>
+                <div class="col-md-1 col-sm-12 col-xs-12 form-group">
+                      <input type="text" id="id_isd_code" value="{{form.instance.isd_code}}"
+                             required name="isd_code" class="form-control">
+                </div>
+                <div class="col-md-1 col-sm-12 col-xs-12 form-group">
+                      <label class="control-label"
+                             for="id_order">Order
+                      </label>
+                </div>
+                <div class="col-md-1 col-sm-12 col-xs-12 form-group">
+                      <input type="text" id="id_order" value="{{form.instance.order}}"
+                             name="order" class="form-control">
+                </div>
+                <div class="col-md-1 col-sm-12 col-xs-12 form-group">
+                      <label class="control-label"
+                             for="id_region">Region
+                      </label>
+                </div>
+                <div class="col-md-1 col-sm-12 col-xs-12 form-group">
+                      <input type="text" id="id_region" value="{{form.instance.region}}"
+                             name="region" class="form-control">
+                </div>
+                <div class="col-md-1 col-sm-12 col-xs-12 form-group">
+                      <label class="control-label"
+                             for="id_sales_id">Sales ID <span class="required">*</span>
+                      </label>
+                </div>
+                <div class="col-md-1 col-sm-12 col-xs-12 form-group">
+                      <input type="text" id="id_sales_id" value="{{form.instance.sales_id}}"
+                             required name="sales_id" class="form-control" >
+                </div>
+                <div class="col-md-1 col-sm-12 col-xs-12 form-group">
+                      <label class="control-label"
+                             for="id_rsm">RSM
+                      </label>
+                </div>
+                <div class="col-md-2 col-sm-12 col-xs-12 form-group">
+                      <input type="text" id="id_rsm" value="{{form.instance.rsm}}"
+                             name="rsm" class="form-control">
+                </div>
+                <div class="col-md-1 col-sm-12 col-xs-12 form-group">
+                      <label class="control-label"
+                             for="id_district_enrollment">District Enrollment
+                      </label>
+                </div>
+                <div class="col-md-1 col-sm-12 col-xs-12 form-group">
+                      <input type="text" id="id_district_enrollment" value="{{form.instance.district_enrollment}}"
+                             name="district_enrollment" class="form-control">
+                </div>
+              </div>
+              <div class="ln_solid"></div>
+              <h4> Address & Contact Information</h4>
+              <br/>
+              <div class="row">
+                <div class="col-md-1 col-sm-12 col-xs-12 form-group">
+                      <label class="control-label"
+                             for="id_address_line1">Address Line 1 <span class="required">*</span>
+                      </label>
+                </div>
+                <div class="col-md-5 col-sm-12 col-xs-12 form-group">
+                      <input type="text" id="id_address_line1" value="{{form.instance.address_line1}}"
+                             required name="address_line1" class="form-control">
+                </div>
+                <div class="col-md-1 col-sm-12 col-xs-12 form-group">
+                      <label class="control-label"
+                             for="id_address_line2">Address Line 2
+                      </label>
+                </div>
+                <div class="col-md-5 col-sm-12 col-xs-12 form-group">
+                      <input type="text" id="id_address_line2" value="{{form.instance.address_line2}}"
+                             name="address_line2" class="form-control">
+                </div>
+                <div class="col-md-1 col-sm-12 col-xs-12 form-group">
+                      <label class="control-label"
+                             for="id_city">City <span class="required">*</span>
+                      </label>
+                </div>
+                <div class="col-md-1 col-sm-12 col-xs-12 form-group">
+                      <input type="text" id="id_city" value="{{form.instance.city}}"
+                             required name="city" class="form-control">
+                </div>
+                <div class="col-md-1 col-sm-12 col-xs-12 form-group">
+                      <label class="control-label"
+                             for="id_state">State <span class="required">*</span>
+                      </label>
+                </div>
+                <div class="col-md-1 col-sm-12 col-xs-12 form-group">
+                      <input type="text" id="id_state" value="{{form.instance.state}}"
+                             required name="state" class="form-control">
+                </div>
+                <div class="col-md-1 col-sm-12 col-xs-12 form-group">
+                      <label class="control-label"
+                             for="id_address_line1">Zip <span class="required">*</span>
+                      </label>
+                </div>
+                <div class="col-md-1 col-sm-12 col-xs-12 form-group">
+                      <input type="text" id="id_zip" value="{{form.instance.zip}}"
+                             required name="zip" class="form-control">
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-1 col-sm-12 col-xs-12 form-group">
+                      <label class="control-label"
+                             for="id_contact_name">Contact Name
+                      </label>
+                </div>
+                <div class="col-md-1 col-sm-12 col-xs-12 form-group">
+                      <input type="text" id="id_contact_name" value="{{form.instance.contact_name}}"
+                             name="contact_name" class="form-control">
+                </div>
+                <div class="col-md-1 col-sm-12 col-xs-12 form-group">
+                      <label class="control-label"
+                             for="id_contact_phone">Contact Phone
+                      </label>
+                </div>
+                <div class="col-md-1 col-sm-12 col-xs-12 form-group">
+                      <input type="text" id="id_contact_phone" value="{{form.instance.contact_phone}}"
+                             name="contact_phone" class="form-control">
+                </div>
+                <div class="col-md-1 col-sm-12 col-xs-12 form-group">
+                      <label class="control-label"
+                             for="id_contact_fax">Contact Fax
+                      </label>
+                </div>
+                <div class="col-md-1 col-sm-12 col-xs-12 form-group">
+                      <input type="text" id="id_contact_fax" value="{{form.instance.contact_fax}}"
+                             name="contact_fax" class="form-control">
+                </div>
+                <div class="col-md-1 col-sm-12 col-xs-12 form-group">
+                      <label class="control-label"
+                             for="id_contact_email">Contact email
+                      </label>
+                </div>
+                <div class="col-md-2 col-sm-12 col-xs-12 form-group">
+                      <input type="text" id="id_contact_email" value="{{form.instance.contact_email}}"
+                             name="contact_email" class="form-control">
+                </div>
+              </div>
+              <br/>
+              <div class="row">
+                <div class="col-md-1 col-sm-12 col-xs-12 form-group">
+                      <label class="control-label"
+                             for="id_notes">Notes
+                      </label>
+                </div>
+                <div class="col-md-5 col-sm-12 col-xs-12 form-group">
+                    <textarea class="form-control" rows="3"
+                              name="notes" id="id_notes" >{{form.instance.notes}}</textarea>
+                </div>
+              </div>
+              <div class="ln_solid"></div>
+              <div class="form-group">
+                <input type="submit" class="btn btn-success pull-right" value="Update School Information"/>
+              </div>
+            </form>
+            <div class="notification">
+              <ul>
+                {% for field in form %}
+                  {% for error in field.errors %}
+                  <li class="error">{{ field.name }}: {{ error|escape }}</li>
+                  {% endfor %}
+                {% endfor %}
+              </ul>
+            </div>
+
+          </div>
+        </div>
+
+
+
+      </div>
+
+    </div>
+    <!-- po table -->
+</div>
+<!-- /page content -->
+{% endblock %}
+
+{% block body_js %}
+    <!-- Select2 -->
+    <!--<script src="{% static "vendors/select2/dist/js/select2.full.min.js" %}"></script>-->
+    <!--<script>-->
+      <!--$(document).ready(function() {-->
+        <!--$(".select_school").select2({-->
+          <!--placeholder: "Select a school",-->
+          <!--allowClear: false-->
+        <!--});-->
+      <!--});-->
+    <!--</script>-->
+    <!-- /Select2 -->
+{% endblock %}

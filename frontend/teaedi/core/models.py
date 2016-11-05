@@ -5,21 +5,22 @@ from django.db import models
 class School(models.Model):
     isd_name = models.CharField(max_length=100)
     isd_code = models.CharField(max_length=30)
-    district_enrollment = models.CharField(max_length=30)
-    order = models.IntegerField()
-    region = models.IntegerField()
+    district_enrollment = models.CharField(
+        max_length=30, null=True, blank=True)
+    order = models.CharField(max_length=30, null=True, blank=True)
+    region = models.CharField(max_length=30, null=True, blank=True)
     sales_id = models.CharField(max_length=10)
-    rsm = models.CharField(max_length=30)
+    rsm = models.CharField(max_length=30, null=True, blank=True)
     address_line1 = models.TextField(max_length=100)
     address_line2 = models.TextField(max_length=100, null=True, blank=True)
     city = models.CharField(max_length=30)
     state = models.CharField(max_length=2)
     zip = models.CharField(max_length=10)
-    contact_name = models.CharField(max_length=30)
-    contact_phone = models.CharField(max_length=30)
-    contact_fax = models.CharField(max_length=30)
-    contact_email = models.CharField(max_length=100)
-    notes = models.TextField(max_length=100)
+    contact_name = models.CharField(max_length=30, null=True, blank=True)
+    contact_phone = models.CharField(max_length=30, null=True, blank=True)
+    contact_fax = models.CharField(max_length=30, null=True, blank=True)
+    contact_email = models.CharField(max_length=100, null=True, blank=True)
+    notes = models.TextField(max_length=100, null=True, blank=True)
 
     def __str__(self):
         return self.isd_name

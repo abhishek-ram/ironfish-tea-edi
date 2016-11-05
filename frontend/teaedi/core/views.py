@@ -6,12 +6,16 @@ from django.urls import reverse_lazy
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.contrib import messages
+from django.conf import settings
 from .models import PurchaseOrder, ShippingInvoice
 from .models import ShippingInvoiceLine, PurchaseOrderLine
 from .models import School, Salesperson, Watcher
 from .forms import WatcherForm, ShippingInvoiceForm
 from traceback import format_exc
 import logging
+import csv
+import os
+import time
 
 # Get an instance of a logger
 logger = logging.getLogger('teaedi')
@@ -66,7 +70,9 @@ class ShippingInvoiceCreate(FormView):
                 tracking_number=header_data[5],
                 invoice_amount=header_data[8]
             )
-            
+
+            quantity_uom_codes = {
+                v: k for k, v in ShippingInvoiceLine.QUANTITY_UOM_CHOICES}
             for line in detail_data:
                 po_line = PurchaseOrderLine.objects.get(
                     purchase_order=original_po, isbn=line[3])
@@ -75,7 +81,7 @@ class ShippingInvoiceCreate(FormView):
                     shipping_invoice=si,
                     sequence=po_line.sequence,
                     quantity=line[1],
-                    quantity_uom=line[4],
+                    quantity_uom=quantity_uom_codes[line[4]],
                     unit_price=line[2],
                     isbn=line[3],
                     actual_ship_date=line[5],
@@ -106,8 +112,52 @@ class ShippingInvoiceList(ListView):
 class ShippingInvoiceDetail(DetailView):
     model = ShippingInvoice
 
-    def post(self, request):
-        self.object = self.get_object()
+    def post(self, request, pk):
+        si = self.get_object()
+        output_filename = os.path.join(
+            settings.TEAEDI['SHIPPING_INVOICE']['EXPORT_FOLDER'],
+            'Invoice_{}_{}.csv'.format(pk, int(time.time())))
+        with open(output_filename, 'wb') as csv_file:
+            csv_writer = csv.writer(csv_file, quoting=csv.QUOTE_MINIMAL)
+            csv_writer.writerow([
+                'Header',
+                '17528036696002',
+                'TEXASEDUAGENCY',
+                pk,
+                si.invoice_date.strftime('%Y%m%d'),
+                si.boxes,
+                si.weight,
+                si.shipping_cost,
+                si.tracking_number,
+                si.purchase_order.isd_name,
+                si.purchase_order.isd_code,
+                si.invoice_amount,
+                si.purchase_order.pk,
+                0,
+                si.purchase_order.order_date.strftime('%Y%m%d'),
+                si.purchase_order.contract
+            ])
+
+            for line in si.lines.all():
+                csv_writer.writerow([
+                    'LineItem',
+                    line.sequence,
+                    line.unit_price,
+                    line.isbn,
+                    line.student_edition,
+                    line.student_edition_cost,
+                    line.quantity,
+                    line.quantity_uom,
+                    line.actual_ship_date.strftime('%Y%m%d')
+                ])
+
+        si.invoice_status = 'P'
+        si.save()
+        messages.success(
+            request, 'Shipping Invoice {} has been confirmed and queued '
+                     'to be sent to TEA.'.format(pk))
+        return HttpResponseRedirect(
+            reverse_lazy('shipping-invoice-detail', args=[pk]))
 
 
 class ShippingInvoiceDelete(DeleteView):
@@ -126,6 +176,26 @@ class ShippingInvoiceDelete(DeleteView):
 
 class SchoolList(ListView):
     model = School
+
+
+class SchoolCreate(SuccessMessageMixin, CreateView):
+    model = School
+    fields = ['isd_name', 'isd_code', 'district_enrollment', 'order',
+              'region', 'sales_id', 'rsm', 'address_line1', 'address_line2',
+              'city', 'state', 'zip', 'contact_name', 'contact_phone',
+              'contact_fax', 'contact_email', 'notes']
+    success_url = reverse_lazy('school-list')
+    success_message = 'School "%(isd_name)s" has been created successfully'
+
+
+class SchoolUpdate(SuccessMessageMixin, UpdateView):
+    model = School
+    fields = ['isd_name', 'isd_code', 'district_enrollment', 'order',
+              'region', 'sales_id', 'rsm', 'address_line1', 'address_line2',
+              'city', 'state', 'zip', 'contact_name', 'contact_phone',
+              'contact_fax', 'contact_email', 'notes']
+    success_url = reverse_lazy('school-list')
+    success_message = 'School "%(isd_name)s" has been updated successfully'
 
 
 class SalespersonList(ListView):

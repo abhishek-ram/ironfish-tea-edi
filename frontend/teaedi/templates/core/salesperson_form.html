@@ -1,6 +1,8 @@
 {% extends 'core/layout.html' %}
 {% load staticfiles %}
 
+{% block title %}TEAEDI Integration - Sales Persons{% endblock %}
+
 {% block head_css %}
   <!-- Select2 -->
   <link href="{% static "/vendors/select2/dist/css/select2.min.css" %}" rel="stylesheet">
@@ -18,7 +20,7 @@
       <div class="col-sm-offset-0 col-sm-12 col-md-offset-3 col-md-6 ">
         <div class="x_panel">
           <div class="x_title">
-            <h3>Create/Update Salesperson Mapping</h3>
+            <h3>Create or Update Salesperson Mapping</h3>
             <div class="clearfix"></div>
           </div>
           <div class="x_content">

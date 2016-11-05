@@ -32,7 +32,15 @@ urlpatterns = [
         login_required(views.ShippingInvoiceDelete.as_view()),
         name='shipping-invoice-delete'),
 
-    url(r'school/$', views.SchoolList.as_view(), name='school-list'),
+    url(r'school/$',
+        login_required(views.SchoolList.as_view()),
+        name='school-list'),
+    url(r'school/add/$',
+        login_required(views.SchoolCreate.as_view()),
+        name='school-add'),
+    url(r'school/(?P<pk>[0-9]+)/$',
+        views.SchoolUpdate.as_view(),
+        name='school-update'),
 
     url(r'salesperson/$',
         login_required(views.SalespersonList.as_view()),
