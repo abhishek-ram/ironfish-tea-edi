@@ -2,7 +2,6 @@
 {% load staticfiles %}
 
 {% block head_css %}
-  <link href="{% static "vendors/datatables.net-bs/css/dataTables.bootstrap.min.css" %}" rel="stylesheet">
 {% endblock %}
 {% block body_content %}
 <!-- page content -->
@@ -12,23 +11,23 @@
     <div class="row">
       <div class="col-md-12">
         <div class="x_panel">
-          <div class="x_title">
-            <h2>Purchase Order {{object.pk}}</h2>
-            <div class="clearfix"></div>
-          </div>
+          <!--<div class="x_title">-->
+            <!--<h2>Purchase Order {{object.pk}}</h2>-->
+            <!--<div class="clearfix"></div>-->
+          <!--</div>-->
           <div class="x_content">
 
             <section class="content invoice">
               <!-- title row -->
-              <!--<div class="row">-->
-                <!--<div class="col-xs-12 invoice-header">-->
-                  <!--<h1>-->
-                                  <!--<i class="fa fa-globe"></i> Invoice.-->
-                                  <!--<small class="pull-right">Date: 16/08/2016</small>-->
-                              <!--</h1>-->
-                <!--</div>-->
-                <!--&lt;!&ndash; /.col &ndash;&gt;-->
-              <!--</div>-->
+              <div class="row">
+                <div class="col-xs-12 invoice-header">
+                  <h1>
+                      <i class="fa fa-list-alt"></i> PO. {{object.pk}}
+                      <small class="pull-right">Date: {{object.order_date|date:"m/d/Y"}}</small>
+                  </h1>
+                </div>
+                <!-- /.col -->
+              </div>
               <!-- info row -->
               <div class="row invoice-info">
                 <div class="col-sm-3 invoice-col">
@@ -126,6 +125,7 @@
               <!-- this row will not appear when printing -->
               <div class="row no-print">
                 <div class="col-xs-12">
+
                   <button class="btn btn-primary pull-right" onclick="window.print();"><i class="fa fa-print"></i> Print</button>
                 </div>
               </div>
@@ -140,18 +140,5 @@
 {% endblock %}
 
 {% block body_js %}
-  <script src="{% static "vendors/datatables.net/js/jquery.dataTables.min.js" %}"></script>
-  <script src="{% static "vendors/datatables.net-bs/js/dataTables.bootstrap.min.js" %}"></script>
-  <script>
-    $(document).ready(function() {
-      $('#datatable').dataTable({
-        "order": [[ 1, "desc" ]],
-        "columnDefs": [
-          { "type": "date", targets: [1, 3] },
-          { "searchable": false, "targets": [1, 3, 6] },
-          { "sortable": false, "targets": [0, 2, 4, 5, 6] }
-        ]
-      });
-    });
-  </script>
+
 {% endblock %}

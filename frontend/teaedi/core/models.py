@@ -59,9 +59,9 @@ class PurchaseOrder(models.Model):
     state = models.CharField(max_length=2)
     zip = models.CharField(max_length=10)
     contact_name = models.CharField(max_length=30)
-    contact_phone = models.CharField(max_length=30)
-    contact_fax = models.CharField(max_length=30)
-    contact_email = models.CharField(max_length=100)
+    contact_phone = models.CharField(max_length=30, null=True)
+    contact_fax = models.CharField(max_length=30, null=True)
+    contact_email = models.CharField(max_length=100, null=True)
     owed_by_isd = models.DecimalField(
         max_digits=20, decimal_places=2, null=True)
     extra = models.DecimalField(max_digits=20, decimal_places=2, null=True)
@@ -105,6 +105,62 @@ class PurchaseOrderLine(models.Model):
 
     def __str__(self):
         return '{} {}'.format(self.purchase_order, self.sequence)
+
+
+class ShippingInvoice(models.Model):
+    INVOICE_STATUSES = (
+        ('O', 'Open'),
+        ('P', 'Processed'),
+        ('A', 'Acknowledged'),
+    )
+
+    invoice_id = models.CharField(max_length=30, primary_key=True)
+    invoice_status = models.CharField(
+        max_length=2, choices=INVOICE_STATUSES, default='O')
+    invoice_date = models.DateField()
+    purchase_order = models.ForeignKey(
+        PurchaseOrder, on_delete=models.CASCADE,
+        related_name='shipping_invoice'
+    )
+    actual_ship_date = models.DateField()
+    boxes = models.IntegerField()
+    weight = models.IntegerField()
+    shipping_cost = models.DecimalField(max_digits=20, decimal_places=2)
+    tracking_number = models.CharField(max_length=100)
+    invoice_amount = models.DecimalField(max_digits=20, decimal_places=2)
+
+    def __str__(self):
+        return self.invoice_id
+
+
+class ShippingInvoiceLine(models.Model):
+    QUANTITY_UOM_CHOICES = (
+        ('BK', 'Book'),
+        ('KT', 'Kit'),
+        ('SP', 'Software Product'),
+        # ('EA', 'EACH')
+    )
+
+    shipping_invoice = models.ForeignKey(
+        ShippingInvoice, on_delete=models.CASCADE, related_name='lines')
+    sequence = models.CharField(max_length=30)
+    quantity = models.IntegerField()
+    quantity_uom = models.CharField(
+        max_length=2, choices=QUANTITY_UOM_CHOICES)
+    unit_price = models.DecimalField(max_digits=20, decimal_places=2)
+    # sub_total = models.DecimalField(max_digits=20, decimal_places=2)
+    actual_ship_date = models.DateField(null=True)
+    isbn = models.CharField(max_length=30)
+    student_edition = models.CharField(max_length=30)
+    student_edition_cost = models.CharField(max_length=30)
+    school_district_owes = models.CharField(max_length=30, null=True)
+
+    @property
+    def sub_total(self):
+        return self.quantity * self.unit_price
+
+    def __str__(self):
+        return '{} {}'.format(self.shipping_invoice, self.sequence)
 
 
 class Watcher(models.Model):

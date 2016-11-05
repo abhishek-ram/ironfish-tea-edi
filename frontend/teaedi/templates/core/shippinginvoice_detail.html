@@ -1,0 +1,205 @@
+{% extends 'core/layout.html' %}
+{% load staticfiles %}
+
+{% block head_css %}
+{% endblock %}
+{% block body_content %}
+<!-- page content -->
+<div class="right_col" role="main">
+
+    <div class="clearfix"></div>
+    <div class="row">
+      <div class="col-md-12">
+        <div class="x_panel">
+          <!--<div class="x_title">-->
+            <!--<h2>Shipping Invoice {{object.pk}}</h2>-->
+            <!--<div class="clearfix"></div>-->
+          <!--</div>-->
+          <div class="x_content">
+
+            <section class="content invoice">
+              <!-- title row -->
+              <div class="row">
+                <div class="col-xs-12 invoice-header">
+                  <h1>
+                      <i class="fa fa-globe"></i> Invoice. {{object.pk}}
+                      <small class="pull-right">Date: {{object.invoice_date|date:"m/d/Y"}}</small>
+                  </h1>
+                </div>
+                <!-- /.col -->
+              </div>
+              <!-- info row -->
+              <div class="row invoice-info">
+                <div class="col-sm-3 invoice-col">
+                  <address>
+                      <strong>{{object.purchase_order.isd_name}}</strong>
+                      <br>{{ object.purchase_order.address_line1 }}
+                      {% if object.purchase_order.address_line2 %}<br>{{ object.purchase_order.address_line2 }} {% endif %}
+                      <br>{{ object.purchase_order.city}}, {{ object.purchase_order.state }} {{ object.purchase_order.zip }}
+                  </address>
+                </div>
+                <!-- /.col -->
+                <div class="col-sm-3 invoice-col">
+                  <b>ISD #:</b> {{ object.purchase_order.isd_code }}
+                </div>
+                <!-- /.col -->
+                <div class="col-sm-3 invoice-col">
+                  <b>Boxes:</b> {{object.boxes}}
+                  <br>
+                  <b>Weight:</b> {{object.weight}}
+                  <br>
+                  <b>Tracking Number:</b> {{object.tracking_number}}
+                  <br>
+                  <b>Actual Ship Date:</b> {{object.actual_ship_date|date:"m/d/Y"}}
+                  <br>
+
+                </div>
+                <!-- /.col -->
+                <!-- /.col -->
+                <div class="col-sm-3 invoice-col">
+                  <b>PO Number:</b> {{object.purchase_order.pk}}
+                  <br>
+                  <b>PO Date:</b> {{object.purchase_order.order_date|date:"m/d/Y"}}
+                  <br>
+                  <b>Contract #:</b> {{object.purchase_order.contract}}
+                  <br>
+                  <b>Status:</b>
+                  {% if object.invoice_status == 'O' %}
+                    <span class="label label-primary">{{ object.get_invoice_status_display }}</span>
+                  {% elif object.invoice_status == 'A' %}
+                    <span class="label label-success">{{ object.get_invoice_status_display }}</span>
+                  {% elif object.invoice_status == 'P' %}
+                    <span class="label label-warning">{{ object.get_invoice_status_display }}</span>
+                  {% endif %}
+                </div>
+                <!-- /.col -->
+              </div>
+              <!-- /.row -->
+
+              <!-- Table row -->
+              <div class="row">
+                <div class="col-xs-12 table">
+                  <table class="table table-striped">
+                    <thead>
+                      <tr>
+                        <th>Order #</th>
+                        <th>Sequence</th>
+                        <th>ISBN #</th>
+                        <th style="width: 30%">ISBN Title</th>
+                        <th>Line Qty</th>
+                        <th>Ext. Cost</th>
+                        <th>Unit Price</th>
+                        <th>Subtotal</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                    {% for line in object.lines.all %}
+                      <tr>
+                          <td>{{ object.pk }}</td>
+                          <td>{{ line.sequence }}</td>
+                          <td>{{ line.isbn }}</td>
+                          <td>Some Description Here</td>
+                          <td>{{ line.quantity }}</td>
+                          <td>{{ line.school_district_owes }}</td>
+                          <td>{{ line.unit_price }}</td>
+                          <td>{{ line.sub_total }}</td>
+                      </tr>
+                    {% endfor %}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+              <!-- /.row -->
+              <div class="row">
+                <!-- accepted payments column -->
+                <div class="col-xs-6">
+                  <!--<p class="lead">Payment Methods:</p>-->
+                  <!--<img src="images/visa.png" alt="Visa">-->
+                  <!--<img src="images/mastercard.png" alt="Mastercard">-->
+                  <!--<img src="images/american-express.png" alt="American Express">-->
+                  <!--<img src="images/paypal2.png" alt="Paypal">-->
+                  <!--<p class="text-muted well well-sm no-shadow" style="margin-top: 10px;">-->
+                    <!--Etsy doostang zoodles disqus groupon greplin oooj voxy zoodles, weebly ning heekya handango imeem plugg dopplr jibjab, movity jajah plickers sifteo edmodo ifttt zimbra.-->
+                  <!--</p>-->
+                </div>
+                <!-- /.col -->
+                <div class="col-xs-6">
+                  <!--<p class="lead">Amount Due 2/22/2014</p>-->
+                  <p class="lead">Invoice Totals</p>
+                  <div class="table-responsive">
+                    <table class="table">
+                      <tbody>
+                        <tr>
+                          <th style="width:50%">Subtotal:</th>
+                          <td>${{object.invoice_amount}}</td>
+                        </tr>
+                        <!--<tr>-->
+                          <!--<th>Tax (9.3%)</th>-->
+                          <!--<td>$10.34</td>-->
+                        <!--</tr>-->
+                        <tr>
+                          <th>Shipping:</th>
+                          <td>${{object.shipping_cost}}</td>
+                        </tr>
+                        <tr>
+                          <th>Total:</th>
+                          <td>${{ object.invoice_amount|add:object.shipping_cost }}</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+                <!-- /.col -->
+              </div>
+              <!-- /.row -->
+              <!-- this row will not appear when printing -->
+              <div class="row no-print">
+                <div class="col-xs-12">
+                  {% if object.invoice_status == 'O' %}
+                    <button class="btn btn-danger pull-right"
+                            onclick="confirmDelete('{% url 'shipping-invoice-delete' object.pk %}', '{{ object.pk }}')">
+                      <i class="fa fa-close"></i> Delete Invoice
+                    </button>
+                    <button class="btn btn-success pull-right">
+                      <i class="fa fa-credit-card"></i> Confirm Invoice
+                    </button>
+                  {% else %}
+                    <button class="btn btn-primary pull-right" onclick="window.print();"><i class="fa fa-print"></i> Print</button>
+                  {% endif %}
+                </div>
+              </div>
+            </section>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- delete modal -->
+    <div class="modal fade delete-modal" tabindex="-1" role="dialog" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-body">
+            <form class="form-horizontal delete-form" method="post">
+              {% csrf_token %}
+
+              <h4>Are you sure you want to delete the invoice "<strong></strong>"?</h4>
+              <input type="submit" class="btn btn-danger" value="Delete Invoice"/>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- delete modal -->
+
+</div>
+<!-- /page content -->
+{% endblock %}
+
+{% block body_js %}
+<script>
+    function confirmDelete(url, invoice_number) {
+      $(".delete-form").attr("action", url);
+      $(".delete-form h4 strong").text(invoice_number);
+      $(".delete-modal").modal("show");
+    }
+  </script>
+{% endblock %}

@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import PurchaseOrder, PurchaseOrderLine
+from .models import PurchaseOrder, PurchaseOrderLine, ShippingInvoice
 
 
 class PurchaseOrderAdmin(admin.ModelAdmin):
@@ -9,6 +9,11 @@ class PurchaseOrderAdmin(admin.ModelAdmin):
 class PurchaseOrderLineAdmin(admin.ModelAdmin):
     pass
 
+
+class ShippingInvoiceAdmin(admin.ModelAdmin):
+    pass
+
+
 admin.site.register(PurchaseOrder, PurchaseOrderAdmin)
 admin.site.register(PurchaseOrderLine, PurchaseOrderLineAdmin)
-
+admin.site.register(ShippingInvoice, ShippingInvoiceAdmin)
