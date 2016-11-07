@@ -1,4 +1,5 @@
 import bots.transform as transform
+import bots.botslib as botslib
 
 
 def main(inn, out):
@@ -15,11 +16,24 @@ def main(inn, out):
         trans = out.putloop({'BOTSID': 'Group'}, {'BOTSID': 'Transaction'})
         trans.put({'BOTSID': 'Transaction',
                    'Code': ak2.get({'BOTSID': 'AK2', 'AK201': None})})
+        reference = ak2.get({'BOTSID': 'AK2', 'AK202': None})
+        original_transaction = list(botslib.query(
+            'select * from ta where reference="{}"'.format(reference.lstrip('0'))))
+
+        if not original_transaction:
+            raise TransactionNotFound(
+                'Could not find the related transaction '
+                'in DB for reference {}'.format(reference))
         trans.put({'BOTSID': 'Transaction',
-                   'Number': ak2.get({'BOTSID': 'AK2', 'AK202': None})})
+                   'Number': original_transaction[0][33]})
+
         trans.put({'BOTSID': 'Transaction',
                    'Status': ak2.get({'BOTSID': 'AK2'},
                                      {'BOTSID': 'AK5', 'AK501': None})})
         trans.put({'BOTSID': 'Transaction',
                    'AdvStatus': ak2.get({'BOTSID': 'AK2'},
                                         {'BOTSID': 'AK5', 'AK502': None})})
+
+
+class TransactionNotFound(botslib.BotsError):
+    pass

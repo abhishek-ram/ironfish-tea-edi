@@ -67,7 +67,7 @@ urlpatterns = [
 
     # URLs for the TEAEDI REST API
     url(r'^api/purchase_order', apis.CRUDPurchaseOrder.as_view()),
-    url(r'^api/shipping_invoice', apis.UpdateShippingInvoice.as_view()),
+    url(r'^api/process_acknowledgment', apis.ProcessAcknowledgment.as_view()),
 
     url(r'^.*', login_required(views.Index.as_view())),
 ] 

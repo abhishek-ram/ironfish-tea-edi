@@ -42,12 +42,14 @@
                     <td><a  href="{% url 'shipping-invoice-detail' si.pk %}">{{ si.pk }}</a></td>
                     <td>{{ si.invoice_date|date:"m/d/Y"  }}</td>
                     <td>
-                      {% if si.invoice_status == 'O' %}
-                        <span class="label label-primary">{{ si.get_invoice_status_display }}</span>
+                      {% if si.invoice_status == 'I' %}
+                        <span class="label label-default">{{ si.get_invoice_status_display }}</span>
                       {% elif si.invoice_status == 'P' %}
-                        <span class="label label-warning">{{ si.get_invoice_status_display }}</span>
+                        <span class="label label-primary">{{ si.get_invoice_status_display }}</span>
                       {% elif si.invoice_status == 'A' %}
                         <span class="label label-success">{{ si.get_invoice_status_display }}</span>
+                      {% elif si.invoice_status == 'R' %}
+                        <span class="label label-danger">{{ si.get_invoice_status_display }}</span>
                      {% endif %}
                     </td>
                     <td>{{ si.purchase_order.pk }}</td>

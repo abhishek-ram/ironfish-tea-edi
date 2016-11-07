@@ -110,14 +110,16 @@ class PurchaseOrderLine(models.Model):
 
 class ShippingInvoice(models.Model):
     INVOICE_STATUSES = (
-        ('O', 'Open'),
+        ('I', 'Imported'),
         ('P', 'Processed'),
-        ('A', 'Acknowledged'),
+        ('A', 'Accepted'),
+        ('E', 'Accepted with Error'),
+        ('R', 'Rejected'),
     )
 
     invoice_id = models.CharField(max_length=30, primary_key=True)
     invoice_status = models.CharField(
-        max_length=2, choices=INVOICE_STATUSES, default='O')
+        max_length=2, choices=INVOICE_STATUSES, default='I')
     invoice_date = models.DateField()
     purchase_order = models.ForeignKey(
         PurchaseOrder, on_delete=models.CASCADE,
@@ -132,6 +134,10 @@ class ShippingInvoice(models.Model):
 
     def __str__(self):
         return self.invoice_id
+
+    @property
+    def invoice_total(self):
+        return self.invoice_amount + self.shipping_cost
 
 
 class ShippingInvoiceLine(models.Model):
@@ -168,7 +174,7 @@ class Watcher(models.Model):
     EVENT_CHOICES = (
         ('PO_NEW', 'New Purchase Order Imported'),
         ('PO_UPD', 'Purchase Order Updated/Cancelled'),
-        ('SI_PRO', 'Shipping and Invoice Document Processed'),
+        # ('SI_PRO', 'Shipping and Invoice Document Processed'),
         ('SI_ACK', 'Shipping and Invoice Document Acknowledged')
     )
 

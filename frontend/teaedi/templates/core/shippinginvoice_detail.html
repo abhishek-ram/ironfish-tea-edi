@@ -64,12 +64,14 @@
                   <b>Contract #:</b> {{object.purchase_order.contract}}
                   <br>
                   <b>Status:</b>
-                  {% if object.invoice_status == 'O' %}
+                  {% if object.invoice_status == 'I' %}
+                    <span class="label label-default">{{ object.get_invoice_status_display }}</span>
+                  {% elif object.invoice_status == 'P' %}
                     <span class="label label-primary">{{ object.get_invoice_status_display }}</span>
                   {% elif object.invoice_status == 'A' %}
                     <span class="label label-success">{{ object.get_invoice_status_display }}</span>
-                  {% elif object.invoice_status == 'P' %}
-                    <span class="label label-warning">{{ object.get_invoice_status_display }}</span>
+                  {% elif object.invoice_status == 'R' %}
+                    <span class="label label-danger">{{ object.get_invoice_status_display }}</span>
                   {% endif %}
                 </div>
                 <!-- /.col -->
@@ -143,7 +145,7 @@
                         </tr>
                         <tr>
                           <th>Total:</th>
-                          <td>${{ object.invoice_amount|add:object.shipping_cost }}</td>
+                          <td>${{ object.invoice_total }}</td>
                         </tr>
                       </tbody>
                     </table>
@@ -155,7 +157,7 @@
               <!-- this row will not appear when printing -->
               <div class="row no-print">
                 <div class="col-xs-12">
-                  {% if object.invoice_status == 'O' %}
+                  {% if object.invoice_status == 'I' %}
                     <button class="btn btn-danger pull-right"
                             onclick="confirmDelete('{% url 'shipping-invoice-delete' object.pk %}', '{{ object.pk }}')">
                       <i class="fa fa-close"></i> Delete Invoice

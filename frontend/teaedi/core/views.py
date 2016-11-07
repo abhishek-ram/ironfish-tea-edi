@@ -33,9 +33,9 @@ class Index(TemplateView):
             'all_si': ShippingInvoice.objects.all().count(),
         }
         context['purchase_orders'] = PurchaseOrder.objects.order_by(
-            'order_date')[:5]
+            '-order_date')[:5]
         context['shipping_invoices'] = ShippingInvoice.objects.order_by(
-            'invoice_date')[:5]
+            '-invoice_date')[:5]
         context['watchers'] = Watcher.objects.all()
         return context
 
@@ -169,8 +169,7 @@ class ShippingInvoiceDetail(DetailView):
         si.invoice_status = 'P'
         si.save()
         messages.success(
-            request, 'Shipping Invoice {} has been confirmed and queued '
-                     'to be sent to TEA.'.format(pk))
+            request, 'Shipping Invoice {} has been sent to TEA.'.format(pk))
         return HttpResponseRedirect(
             reverse_lazy('shipping-invoice-detail', args=[pk]))
 
