@@ -1,10 +1,9 @@
 from __future__ import unicode_literals
-from django.views.generic import ListView, DetailView, FormView
+from django.views.generic import ListView, DetailView, FormView, TemplateView
 from django.contrib.messages.views import SuccessMessageMixin
 from django.views.generic import CreateView, DeleteView, UpdateView
 from django.urls import reverse_lazy
 from django.http import HttpResponseRedirect
-from django.shortcuts import render
 from django.contrib import messages
 from django.conf import settings
 from .models import PurchaseOrder, ShippingInvoice
@@ -21,8 +20,24 @@ import time
 logger = logging.getLogger('teaedi')
 
 
-def index(request):
-    return render(request, 'core/index.html')
+class Index(TemplateView):
+    template_name = 'core/index.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(Index, self).get_context_data(**kwargs)
+        context['counts'] = {
+            'new_pos': PurchaseOrder.objects.filter(order_status='O').count(),
+            'all_pos': PurchaseOrder.objects.all().count(),
+            'new_si': ShippingInvoice.objects.exclude(
+                invoice_status='A').count(),
+            'all_si': ShippingInvoice.objects.all().count(),
+        }
+        context['purchase_orders'] = PurchaseOrder.objects.order_by(
+            'order_date')[:5]
+        context['shipping_invoices'] = ShippingInvoice.objects.order_by(
+            'invoice_date')[:5]
+        context['watchers'] = Watcher.objects.all()
+        return context
 
 
 class PurchaseOrderList(ListView):

@@ -9,7 +9,7 @@ urlpatterns = [
     url(r'^admin', admin.site.urls),
 
     # URLs for the TEAEDI app
-    url(r'^index/$', login_required(views.index), name='index'),
+    url(r'^index/$', login_required(views.Index.as_view()), name='index'),
     url(r'^login/$', login, name='login'),
     url(r'^logout/$', logout, {'next_page': '/index/'}, name='logout'),
     url(r'^purchase_order/$',
@@ -66,9 +66,8 @@ urlpatterns = [
         name='watcher-update'),
 
     # URLs for the TEAEDI REST API
-    url(r'^api/purchase_order',
-        apis.CRUDPurchaseOrder.as_view(),
-        name='po-create'),
+    url(r'^api/purchase_order', apis.CRUDPurchaseOrder.as_view()),
+    url(r'^api/shipping_invoice', apis.UpdateShippingInvoice.as_view()),
 
-    url(r'^.*', views.index),
+    url(r'^.*', login_required(views.Index.as_view())),
 ] 

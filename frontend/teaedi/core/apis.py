@@ -171,3 +171,12 @@ class CRUDPurchaseOrder(APIView):
                           message='',
                           html_message=email_body)
         return Response({'status': 'OK'})
+
+
+class UpdateShippingInvoice(APIView):
+    authentication_classes = (TokenAuthentication,)
+    parser_classes = (JSONParser,)
+
+    def put(self, request):
+        """Endpoint for updating status of existing shipping invoices"""
+        pass
