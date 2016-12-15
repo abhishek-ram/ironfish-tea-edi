@@ -6,7 +6,7 @@ from rest_framework.authentication import TokenAuthentication
 from django.core.mail import send_mail
 from django.template.loader import render_to_string
 from .models import PurchaseOrder, PurchaseOrderLine, Watcher
-from .models import School, Salesperson, ShippingInvoice
+from .models import School, SalesPerson, ShippingInvoice
 from decimal import Decimal
 
 
@@ -44,7 +44,7 @@ class CRUDPurchaseOrder(APIView):
                     isd_code=address['Code'].lstrip('0')).first()
                 if school:
                     po.sales_id = school.sales_id
-                    salesperson = Salesperson.objects.filter(
+                    salesperson = SalesPerson.objects.filter(
                         school=school).first()
                     if salesperson:
                         po.salesperson = salesperson.name

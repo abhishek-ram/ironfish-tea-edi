@@ -8,7 +8,7 @@ from django.contrib import messages
 from django.conf import settings
 from .models import PurchaseOrder, ShippingInvoice
 from .models import ShippingInvoiceLine, PurchaseOrderLine
-from .models import School, Salesperson, Watcher
+from .models import School, SalesPerson, Watcher
 from .forms import WatcherForm, ShippingInvoiceForm
 from traceback import format_exc
 import logging
@@ -196,8 +196,10 @@ class SchoolCreate(SuccessMessageMixin, CreateView):
     model = School
     fields = ['isd_name', 'isd_code', 'district_enrollment', 'order',
               'region', 'sales_id', 'rsm', 'address_line1', 'address_line2',
-              'city', 'state', 'zip', 'contact_name', 'contact_phone',
-              'contact_fax', 'contact_email', 'notes']
+              'address_line3', 'city', 'state', 'zip', 'contact_name',
+              'contact_phone', 'contact_fax', 'contact_email', 'notes',
+              'active', 'ag', 'fcs', 'ti', 'bm', 'careers', 'dag', 'dfcs',
+              'dti', 'dbm', 'dcareers', 'careerdemo']
     success_url = reverse_lazy('school-list')
     success_message = 'School "%(isd_name)s" has been created successfully'
 
@@ -206,18 +208,20 @@ class SchoolUpdate(SuccessMessageMixin, UpdateView):
     model = School
     fields = ['isd_name', 'isd_code', 'district_enrollment', 'order',
               'region', 'sales_id', 'rsm', 'address_line1', 'address_line2',
-              'city', 'state', 'zip', 'contact_name', 'contact_phone',
-              'contact_fax', 'contact_email', 'notes']
+              'address_line3', 'city', 'state', 'zip', 'contact_name',
+              'contact_phone', 'contact_fax', 'contact_email', 'notes',
+              'active', 'ag', 'fcs', 'ti', 'bm', 'careers', 'dag', 'dfcs',
+              'dti', 'dbm', 'dcareers', 'careerdemo']
     success_url = reverse_lazy('school-list')
     success_message = 'School "%(isd_name)s" has been updated successfully'
 
 
 class SalespersonList(ListView):
-    model = Salesperson
+    model = SalesPerson
 
 
 class SalespersonCreate(SuccessMessageMixin, CreateView):
-    model = Salesperson
+    model = SalesPerson
     fields = ['name', 'school']
     success_url = reverse_lazy('salesperson-list')
     success_message = 'Salesperson "%(name)s" has been mapped to ' \
@@ -228,14 +232,14 @@ class SalespersonCreate(SuccessMessageMixin, CreateView):
         context = super(SalespersonCreate, self).get_context_data(**kwargs)
         valid_schools = []
         for school in School.objects.all():
-            if not Salesperson.objects.filter(school=school).exists():
+            if not SalesPerson.objects.filter(school=school).exists():
                 valid_schools.append((school.pk, school.isd_name))
         context['form'].fields['school'].choices = valid_schools
         return context
 
 
 class SalespersonUpdate(SuccessMessageMixin, UpdateView):
-    model = Salesperson
+    model = SalesPerson
     fields = ['name', 'school']
     success_url = reverse_lazy('salesperson-list')
     success_message = 'Salesperson "%(name)s" has been mapped to ' \
@@ -246,14 +250,14 @@ class SalespersonUpdate(SuccessMessageMixin, UpdateView):
         context = super(SalespersonUpdate, self).get_context_data(**kwargs)
         valid_schools = [(self.object.school.pk, self.object.school.isd_name)]
         for school in School.objects.all():
-            if not Salesperson.objects.filter(school=school).exists():
+            if not SalesPerson.objects.filter(school=school).exists():
                 valid_schools.append((school.pk, school.isd_name))
         context['form'].fields['school'].choices = valid_schools
         return context
 
 
 class SalespersonDelete(DeleteView):
-    model = Salesperson
+    model = SalesPerson
     success_url = reverse_lazy('salesperson-list')
 
     def delete(self, request, *args, **kwargs):
