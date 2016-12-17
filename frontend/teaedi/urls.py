@@ -1,31 +1,73 @@
-"""teaedi URL Configuration
-
-The `urlpatterns` list routes URLs to views. For more information please see:
-    https://docs.djangoproject.com/en/1.10/topics/http/urls/
-Examples:
-Function views
-    1. Add an import:  from my_app import views
-    2. Add a URL to urlpatterns:  url(r'^$', views.home, name='home')
-Class-based views
-    1. Add an import:  from other_app.views import Home
-    2. Add a URL to urlpatterns:  url(r'^$', Home.as_view(), name='home')
-Including another URLconf
-    1. Import the include() function: from django.conf.urls import url, include
-    2. Add a URL to urlpatterns:  url(r'^blog/', include('blog.urls'))
-"""
 from django.conf.urls import url
 from django.contrib import admin
 from django.contrib.auth.views import login, logout
-from teaedi.core.views import index
+from django.contrib.auth.decorators import login_required
+from .core import views, apis
 
 urlpatterns = [
     # URLs for the django admin site
-    url(r'^admin/', admin.site.urls),
+    url(r'^admin', admin.site.urls),
 
-    # URLs for the teaedi app
-    url(r'^index/', index, name='index'),
+    # URLs for the TEAEDI app
+    url(r'^index/$', login_required(views.Index.as_view()), name='index'),
     url(r'^login/$', login, name='login'),
     url(r'^logout/$', logout, {'next_page': '/index/'}, name='logout'),
+    url(r'^purchase_order/$',
+        login_required(views.PurchaseOrderList.as_view()),
+        name='po-list'),
+    url(r'^purchase_order/(?P<pk>[a-zA-Z0-9]+)/$',
+        login_required(views.PurchaseOrderDetail.as_view()),
+        name='po-detail'),
 
-    url(r'^.*', index),
+    url(r'^shipping_invoice/$',
+        login_required(views.ShippingInvoiceList.as_view()),
+        name='shipping-invoice-list'),
+    url(r'^shipping_invoice/add/$',
+        login_required(views.ShippingInvoiceCreate.as_view()),
+        name='shipping-invoice-add'),
+    url(r'^shipping_invoice/(?P<pk>[a-zA-Z0-9]+)/$',
+        login_required(views.ShippingInvoiceDetail.as_view()),
+        name='shipping-invoice-detail'),
+    url(r'shipping_invoice/(?P<pk>[0-9]+)/delete/$',
+        login_required(views.ShippingInvoiceDelete.as_view()),
+        name='shipping-invoice-delete'),
+
+    url(r'school/$',
+        login_required(views.SchoolList.as_view()),
+        name='school-list'),
+    url(r'school/add/$',
+        login_required(views.SchoolCreate.as_view()),
+        name='school-add'),
+    url(r'school/(?P<pk>[0-9]+)/$',
+        views.SchoolUpdate.as_view(),
+        name='school-update'),
+
+    url(r'salesperson/$',
+        login_required(views.SalespersonList.as_view()),
+        name='salesperson-list'),
+    url(r'salesperson/add/$',
+        login_required(views.SalespersonCreate.as_view()),
+        name='salesperson-add'),
+    url(r'salesperson/(?P<pk>[0-9]+)/$',
+        login_required(views.SalespersonUpdate.as_view()),
+        name='salesperson-update'),
+    url(r'salesperson/(?P<pk>[0-9]+)/delete/$',
+        login_required(views.SalespersonDelete.as_view()),
+        name='salesperson-delete'),
+
+    url(r'watcher/$',
+        login_required(views.WatcherList.as_view()),
+        name='watcher-list'),
+    url(r'watcher/add/$',
+        login_required(views.WatcherCreate.as_view()),
+        name='watcher-add'),
+    url(r'watcher/(?P<pk>[0-9]+)/$',
+        login_required(views.WatcherUpdate.as_view()),
+        name='watcher-update'),
+
+    # URLs for the TEAEDI REST API
+    url(r'^api/purchase_order', apis.CRUDPurchaseOrder.as_view()),
+    url(r'^api/process_acknowledgment', apis.ProcessAcknowledgment.as_view()),
+
+    url(r'^.*', login_required(views.Index.as_view())),
 ] 

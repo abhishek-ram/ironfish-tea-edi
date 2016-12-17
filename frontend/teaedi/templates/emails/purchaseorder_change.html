@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+  <!--<head>-->
+    <!--<style>-->
+        <!--table{-->
+            <!--border: 1px solid black;-->
+            <!--table-layout: fixed;-->
+            <!--width: 200px;-->
+        <!--}-->
+
+        <!--th, td {-->
+            <!--border: 1px solid black;-->
+            <!--overflow: hidden;-->
+            <!--width: 100px;-->
+        <!--}-->
+    <!--</style>-->
+  <!--</head>-->
+  <body>
+    <p>
+      Purchase order {{po.order_id}} has been modified by TEA. The details of the modification can be found below.
+    We request you to update the order manually in MS Dynamics to reflect these changes.
+    </p>
+    <br/>
+    <h4>Deleted Lines</h4>
+    <table style="border:1px solid black;table-layout:fixed;width:500px;">
+      <thead>
+        <tr>
+          <th style="border:1px solid black;overflow:hidden;width:100px;">Sequence</th>
+          <th style="border:1px solid black;overflow:hidden;width:100px;">ISBN</th>
+          <th style="border:1px solid black;overflow:hidden;width:100px;">Quantity</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for line in deleted_lines %}
+
+        <tr>
+          <td style="border:1px solid black;overflow:hidden;width:100px;">{{ line.sequence }}</td>
+          <td style="border:1px solid black;overflow:hidden;width:100px;">{{ line.isbn }}</td>
+          <td style="border:1px solid black;overflow:hidden;width:100px;">{{ line.quantity }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+    </table>
+    <br/>
+    <br/>
+    <h4>Changed Lines</h4>
+    <table style="border:1px solid black;table-layout:fixed;width:500px;">
+      <thead>
+        <tr>
+          <th style="border:1px solid black;overflow:hidden;width:100px;">Sequence</th>
+          <th style="border:1px solid black;overflow:hidden;width:100px;">ISBN</th>
+          <th style="border:1px solid black;overflow:hidden;width:100px;">Quantity</th>
+          <th style="border:1px solid black;overflow:hidden;width:100px;">Original Quantity</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for line in changed_lines %}
+
+        <tr>
+          <td style="border:1px solid black;overflow:hidden;width:100px;">{{ line.sequence }}</td>
+          <td style="border:1px solid black;overflow:hidden;width:100px;">{{ line.isbn }}</td>
+          <td style="border:1px solid black;overflow:hidden;width:100px;">{{ line.quantity }}</td>
+          <td style="border:1px solid black;overflow:hidden;width:100px;">{{ line.original_quantity }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+    </table>
+    <br/>
+    <br/>
+    <h4>Added Lines</h4>
+    <table style="border:1px solid black;table-layout:fixed;width:800px;">
+      <thead>
+        <tr>
+          <th style="border:1px solid black;overflow:hidden;width:100px;">Sequence</th>
+          <th style="border:1px solid black;overflow:hidden;width:100px;">ISBN #</th>
+          <th style="border:1px solid black;overflow:hidden;width:100px;width: 30%;">ISBN Title</th>
+          <th style="border:1px solid black;overflow:hidden;width:100px;">Line Qty</th>
+          <th style="border:1px solid black;overflow:hidden;width:100px;">Ext. Cost</th>
+          <th style="border:1px solid black;overflow:hidden;width:100px;">Unit Price</th>
+          <th style="border:1px solid black;overflow:hidden;width:100px;">Subtotal</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for line in added_lines %}
+
+        <tr>
+          <td style="border:1px solid black;overflow:hidden;width:100px;">{{ line.sequence }}</td>
+          <td style="border:1px solid black;overflow:hidden;width:100px;">{{ line.isbn }}</td>
+          <td style="border:1px solid black;overflow:hidden;width:100px;">Some Description Here</td>
+          <td style="border:1px solid black;overflow:hidden;width:100px;">{{ line.quantity }}</td>
+          <td style="border:1px solid black;overflow:hidden;width:100px;">{{ line.school_district_owes }}</td>
+          <td style="border:1px solid black;overflow:hidden;width:100px;">{{ line.unit_price }}</td>
+          <td style="border:1px solid black;overflow:hidden;width:100px;">{{ line.sub_total }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+    </table>
+  </body>
+</html>

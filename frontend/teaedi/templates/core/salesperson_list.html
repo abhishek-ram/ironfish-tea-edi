@@ -1,0 +1,88 @@
+{% extends 'core/layout.html' %}
+{% load staticfiles %}
+{% block title %}TEAEDI Integration - Sales Persons{% endblock %}
+
+{% block head_css %}
+  <link href="{% static "vendors/datatables.net-bs/css/dataTables.bootstrap.min.css" %}" rel="stylesheet">
+{% endblock %}
+{% block body_content %}
+<!-- page content -->
+<div class="right_col" role="main">
+
+    <div class="clearfix"></div>
+
+    <!-- sp table -->
+    <div class="row">
+      <div class="col-md-12 col-sm-12 col-xs-12">
+        <div class="x_panel">
+          <div class="x_title">
+            <h3>Sales Persons <small>You can find the mapping of all schools to salespersons here</small>
+              <a class="btn btn-primary" type="button" href="{% url 'salesperson-add' %}"><i class="fa fa-plus" ></i> Add New Mapping</a>
+            </h3>
+            <div class="clearfix"></div>
+          </div>
+          <div class="x_content">
+            <table id="datatable" class="table table-striped table-bordered">
+              <thead>
+                <tr>
+                  <th>School</th>
+                  <th>Salesperson</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for sp in object_list %}
+                  <tr>
+                    <td>{{ sp.school }}</td>
+                    <td>{{ sp.name }}</td>
+                    <td>
+                      <a href="{% url 'salesperson-update' sp.pk %}" class="btn btn-xs btn-success">Edit</a>
+                      <button onclick="confirmDelete('{% url 'salesperson-delete' sp.pk %}', '{{ sp.name }}')"
+                              class="btn btn-xs btn-danger">Delete</button>
+                    </td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- sp table -->
+    <!-- delete modal -->
+    <div class="modal fade delete-modal" tabindex="-1" role="dialog" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-body">
+            <form class="form-horizontal delete-form" method="post">
+              {% csrf_token %}
+
+              <h4>Are you sure you want to delete the mapping for salesperson "<strong></strong>"?</h4>
+              <input type="submit" class="btn btn-danger" value="Delete Mapping"/>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- delete modal -->
+</div>
+<!-- /page content -->
+{% endblock %}
+
+{% block body_js %}
+  <script src="{% static "vendors/datatables.net/js/jquery.dataTables.min.js" %}"></script>
+  <script src="{% static "vendors/datatables.net-bs/js/dataTables.bootstrap.min.js" %}"></script>
+  <script>
+    function confirmDelete(url, salesperson) {
+      $(".delete-form").attr("action", url);
+      $(".delete-form h4 strong").text(salesperson);
+      $(".delete-modal").modal("show");
+    }
+    $(document).ready(function() {
+      $('#datatable').dataTable({
+        "pageLength": 50,
+        "ordering": false
+      });
+    });
+  </script>
+{% endblock %}

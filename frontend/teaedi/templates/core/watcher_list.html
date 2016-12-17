@@ -1,0 +1,54 @@
+{% extends 'core/layout.html' %}
+{% load staticfiles %}
+{% block title %}TEAEDI Integration - Watchers{% endblock %}
+{% block body_content %}
+<!-- page content -->
+<div class="right_col" role="main">
+
+    <div class="clearfix"></div>
+
+    <!-- sp table -->
+    <div class="row">
+      <div class="col-md-12 col-sm-12 col-xs-12">
+        <div class="x_panel">
+          <div class="x_title">
+            <h3>Notifications <small>Define who gets notified and on which events</small>
+              <a class="btn btn-primary" type="button" href="{% url 'watcher-add' %}"><i class="fa fa-plus" ></i> Add New Watcher</a>
+            </h3>
+            <div class="clearfix"></div>
+          </div>
+          <div class="x_content">
+            <table class="table table-bordered">
+              <thead>
+                <tr>
+                  <th>Email ID</th>
+                  <th>Watched Events</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for w in object_list %}
+                  <tr>
+                    <td>{{ w.email_id }}</td>
+                    <td>
+                      <ul class="to_do">
+                      {% for event in w.get_events_display %}
+                        <li>{{event}}</li>
+                      {% endfor %}
+                      </ul>
+                    </td>
+                    <td>
+                      <a href="{% url 'watcher-update' w.pk %}" class="btn btn-xs btn-success">Edit</a>
+                    </td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- sp table -->
+</div>
+<!-- /page content -->
+{% endblock %}

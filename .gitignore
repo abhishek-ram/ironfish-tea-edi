@@ -93,3 +93,5 @@ ENV/
 .idea
 db*
 settings.py
+botssys/
+migrations/

@@ -1,0 +1,145 @@
+{% extends 'core/layout.html' %}
+{% load staticfiles %}
+
+{% block title %}Purchase Order {{object.pk}}{% endblock %}
+{% block head_css %}
+{% endblock %}
+{% block body_content %}
+<!-- page content -->
+<div class="right_col" role="main">
+
+    <div class="clearfix"></div>
+    <div class="row">
+      <div class="col-md-12">
+        <div class="x_panel">
+          <!--<div class="x_title">-->
+            <!--<h2>Purchase Order {{object.pk}}</h2>-->
+            <!--<div class="clearfix"></div>-->
+          <!--</div>-->
+          <div class="x_content">
+
+            <section class="content invoice">
+              <!-- title row -->
+              <div class="row">
+                <div class="col-xs-12 invoice-header">
+                  <h1>
+                      <i class="fa fa-list-alt"></i> PO. {{object.pk}}
+                      <small class="pull-right">Date: {{object.order_date|date:"m/d/Y"}}</small>
+                  </h1>
+                </div>
+                <!-- /.col -->
+              </div>
+              <!-- info row -->
+              <div class="row invoice-info">
+                <div class="col-sm-3 invoice-col">
+                  <address>
+                      <strong>{{object.isd_name}}</strong>
+                      <br>{{ object.address_line1 }}
+                      {% if object.address_line2 %}<br>{{ object.address_line2 }} {% endif %}
+                      <br>{{ object.city}}, {{ object.state }} {{ object.zip }}
+                  </address>
+                </div>
+                <!-- /.col -->
+                <div class="col-sm-3 invoice-col">
+                  <b>ISD #:</b> {{ object.isd_code }}
+                </div>
+                <!-- /.col -->
+                <div class="col-sm-3 invoice-col">
+                  <b>Sales ID:</b> {{object.sales_id}}
+                  <br>
+                  <b>Salesperson:</b> {{object.salesperson}}
+                  <br>
+                  <b>Ship Date:</b> {{object.ship_date|date:"m/d/Y"}}
+                  <br>
+                  <b>Contract #:</b> {{object.contract}}
+                </div>
+                <!-- /.col -->
+                <!-- /.col -->
+                <div class="col-sm-3 invoice-col">
+                  <b>Contact:</b> {{object.contact_name}}
+                  <br>
+                  <b>Phone:</b> {{object.contact_phone}}
+                  <br>
+                  <b>Customer PO:</b> {{object.customer_po}}
+                  <br>
+                  <b>Status:</b>
+                  {% if object.order_status == 'O' %}
+                    <span class="label label-primary">{{ object.get_order_status_display }}</span>
+                  {% elif object.order_status == 'P' %}
+                    <span class="label label-success">{{ object.get_order_status_display }}</span>
+                  {% elif object.order_status == 'C' %}
+                    <span class="label label-danger">{{ object.get_order_status_display }}</span>
+                  {% elif object.order_status == 'M' %}
+                    <span class="label label-warning">{{ object.get_order_status_display }}</span>
+                  {% endif %}
+                </div>
+                <!-- /.col -->
+              </div>
+              <!-- /.row -->
+
+              <!-- Table row -->
+              <div class="row">
+                <div class="col-xs-12 table">
+                  <table class="table table-striped">
+                    <thead>
+                      <tr>
+                        <th>Order #</th>
+                        <th>Sequence</th>
+                        <th>Line Status</th>
+                        <th>ISBN #</th>
+                        <th style="width: 30%">ISBN Title</th>
+                        <th>Line Qty</th>
+                        <th>Ext. Cost</th>
+                        <th>Unit Price</th>
+                        <th>Subtotal</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                    {% for line in object.lines.all %}
+                      <tr>
+                          <td>{{ object.pk }}</td>
+                          <td>{{ line.sequence }}</td>
+                          <td>
+                            {% if line.cancelled %}
+                              <span class="label label-danger">Cancelled</span>
+                            {% elif line.modified %}
+                              <span class="label label-warning">Modified</span>
+                            {% elif line.added %}
+                              <span class="label label-success">Added</span>
+                            {% else %}
+                              <span class="label label-primary">Original</span>
+                            {% endif %}
+                          </td>
+                          <td>{{ line.isbn }}</td>
+                          <td>Some Description Here</td>
+                          <td>{{ line.quantity }}</td>
+                          <td>{{ line.school_district_owes }}</td>
+                          <td>{{ line.unit_price }}</td>
+                          <td>{{ line.sub_total }}</td>
+                      </tr>
+                    {% endfor %}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+              <!-- /.row -->
+              <!-- this row will not appear when printing -->
+              <div class="row no-print">
+                <div class="col-xs-12">
+
+                  <button class="btn btn-primary pull-right" onclick="window.print();"><i class="fa fa-print"></i> Print</button>
+                </div>
+              </div>
+            </section>
+          </div>
+        </div>
+      </div>
+    </div>
+
+</div>
+<!-- /page content -->
+{% endblock %}
+
+{% block body_js %}
+
+{% endblock %}

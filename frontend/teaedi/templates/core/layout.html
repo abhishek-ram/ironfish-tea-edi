@@ -12,12 +12,18 @@
     <meta name="description" content="">
     <meta name="author" content="">
     {% endblock meta %}
-    <title>TEAEDI Integration - Home</title>
+    <title>{% block title %}{% endblock %}</title>
 
     <!-- Bootstrap -->
     <link href="{% static "vendors/bootstrap/dist/css/bootstrap.min.css" %}" rel="stylesheet">
+
     <!-- Font Awesome -->
     <link href="{% static "vendors/font-awesome/css/font-awesome.min.css" %}" rel="stylesheet">
+
+    <!-- PNotify -->
+    <link href="{% static "vendors/pnotify/dist/pnotify.css" %}" rel="stylesheet">
+    <link href="{% static "vendors/pnotify/dist/pnotify.buttons.css" %}" rel="stylesheet">
+    <link href="{% static "vendors/pnotify/dist/pnotify.nonblock.css" %}" rel="stylesheet">
 
     <!-- Custom Theme Style -->
     <link href="{% static "css/custom.min.css" %}" rel="stylesheet">
@@ -46,10 +52,17 @@
               <div class="menu_section">
                 <h3>General</h3>
                 <ul class="nav side-menu">
-                  <li class="active"><a><i class="fa fa-home" href="{% url 'index' %}" ></i> Home </a></li>
-                  <li><a><i class="fa fa-newspaper-o" href="#" ></i> Purchase Orders </a></li>
-                  <li><a><i class="fa fa-money" href="#" ></i> Invoices </a></li>
-                  <li><a><i class="fa fa-history" href="#" ></i> History </a></li>
+                  <li><a href="{% url 'index' %}"><i class="fa fa-home" ></i> Home </a></li>
+                  <li><a href="{% url 'school-list' %}"><i class="fa fa-institution" ></i> Schools </a></li>
+                  <li><a href="{% url 'salesperson-list' %}"><i class="fa fa-users"></i> Sales Persons </a></li>
+                  <li><a href="{% url 'po-list' %}"><i class="fa fa-list-alt"></i> Purchase Orders </a></li>
+                  <li><a href="{% url 'shipping-invoice-list' %}" ><i class="fa fa-globe"></i> Shipping Invoices </a></li>
+                  <!--<li><a href="#" ><i class="fa fa-history"></i> History </a></li>-->
+                  <li><a><i class="fa fa-cogs"></i>Settings <span class="fa fa-chevron-down"></span></a>
+                    <ul class="nav child_menu">
+                      <li><a href="{% url 'watcher-list' %}">Notifications</a></li>
+                    </ul>
+                  </li>
                 </ul>
               </div>
 
@@ -95,55 +108,55 @@
                   </ul>
                 </li>
 
-                <li role="presentation" class="dropdown">
-                  <a href="javascript:;" class="dropdown-toggle info-number" data-toggle="dropdown" aria-expanded="false">
-                    <i class="fa fa-envelope-o"></i>
-                    <span class="badge bg-green">6</span>
-                  </a>
-                  <ul id="menu1" class="dropdown-menu list-unstyled msg_list" role="menu">
-                    <li>
-                      <a>
-                        <span>
-                          <span>Admin</span>
-                          <span class="time">3 mins ago</span>
-                        </span>
-                        <span class="message">
-                          New Purchase Order XXGSDAD has been imported and available for download.
-                        </span>
-                      </a>
-                    </li>
-                    <li>
-                      <a>
-                        <span>
-                          <span>Admin</span>
-                          <span class="time">3 mins ago</span>
-                        </span>
-                        <span class="message">
-                          New Purchase Order XXGSDAD has been imported and available for download.
-                        </span>
-                      </a>
-                    </li>
-                    <li>
-                      <a>
-                        <span>
-                          <span>Admin</span>
-                          <span class="time">3 mins ago</span>
-                        </span>
-                        <span class="message">
-                          New Purchase Order XXGSDAD has been imported and available for download.
-                        </span>
-                      </a>
-                    </li>
-                    <li>
-                      <div class="text-center">
-                        <a>
-                          <strong>See All Alerts</strong>
-                          <i class="fa fa-angle-right"></i>
-                        </a>
-                      </div>
-                    </li>
-                  </ul>
-                </li>
+                <!--<li role="presentation" class="dropdown">-->
+                  <!--<a href="javascript:;" class="dropdown-toggle info-number" data-toggle="dropdown" aria-expanded="false">-->
+                    <!--<i class="fa fa-envelope-o"></i>-->
+                    <!--<span class="badge bg-green">6</span>-->
+                  <!--</a>-->
+                  <!--<ul id="menu1" class="dropdown-menu list-unstyled msg_list" role="menu">-->
+                    <!--<li>-->
+                      <!--<a>-->
+                        <!--<span>-->
+                          <!--<span>Admin</span>-->
+                          <!--<span class="time">3 mins ago</span>-->
+                        <!--</span>-->
+                        <!--<span class="message">-->
+                          <!--New Purchase Order XXGSDAD has been imported and available for download.-->
+                        <!--</span>-->
+                      <!--</a>-->
+                    <!--</li>-->
+                    <!--<li>-->
+                      <!--<a>-->
+                        <!--<span>-->
+                          <!--<span>Admin</span>-->
+                          <!--<span class="time">3 mins ago</span>-->
+                        <!--</span>-->
+                        <!--<span class="message">-->
+                          <!--New Purchase Order XXGSDAD has been imported and available for download.-->
+                        <!--</span>-->
+                      <!--</a>-->
+                    <!--</li>-->
+                    <!--<li>-->
+                      <!--<a>-->
+                        <!--<span>-->
+                          <!--<span>Admin</span>-->
+                          <!--<span class="time">3 mins ago</span>-->
+                        <!--</span>-->
+                        <!--<span class="message">-->
+                          <!--New Purchase Order XXGSDAD has been imported and available for download.-->
+                        <!--</span>-->
+                      <!--</a>-->
+                    <!--</li>-->
+                    <!--<li>-->
+                      <!--<div class="text-center">-->
+                        <!--<a>-->
+                          <!--<strong>See All Alerts</strong>-->
+                          <!--<i class="fa fa-angle-right"></i>-->
+                        <!--</a>-->
+                      <!--</div>-->
+                    <!--</li>-->
+                  <!--</ul>-->
+                <!--</li>-->
               </ul>
             </nav>
           </div>
@@ -161,6 +174,14 @@
         <!-- /footer content -->
       </div>
     </div>
+
+    <div class="notification">
+      <ul>
+        {% for message in messages %}
+          <li class="{{ message.level_tag }}">{{ message }}</li>
+        {% endfor %}
+      </ul>
+    </div>
       <!-- jQuery -->
     <script src="{% static "vendors/jquery/dist/jquery.min.js" %}"></script>
     <!-- Bootstrap -->
@@ -170,8 +191,31 @@
     <!-- NProgress -->
     <script src="{% static "vendors/nprogress/nprogress.js" %}"></script>
 
+    <!-- PNotify -->
+    <script src="{% static "vendors/pnotify/dist/pnotify.js" %}"></script>
+    <script src="{% static "vendors/pnotify/dist/pnotify.buttons.js" %}"></script>
+    <script src="{% static "vendors/pnotify/dist/pnotify.nonblock.js" %}"></script>
+
     <!-- Custom Theme Scripts -->
     <script src="{% static "js/custom.min.js" %}"></script>
+
+    <!-- PNotify -->
+    <script>
+      $(document).ready(function() {
+        $(".notification").hide();
+        var notifications = $(".notification li");
+        notifications.each(function(idx, li) {
+          var notification = $(li);
+          new PNotify({
+              title: 'New Message',
+              text: notification.text(),
+              type: notification.attr('class'),
+              styling: 'bootstrap3'
+          });
+        });
+      });
+    </script>
+    <!-- /PNotify -->
     {% block body_js %}
     {% endblock body_js %}
   </body>

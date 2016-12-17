@@ -1,0 +1,91 @@
+{% extends 'core/layout.html' %}
+{% load staticfiles %}
+{% block title %}TEAEDI Integration - Shipping Invoices{% endblock %}
+{% block head_css %}
+  <link href="{% static "vendors/datatables.net-bs/css/dataTables.bootstrap.min.css" %}" rel="stylesheet">
+{% endblock %}
+{% block body_content %}
+<!-- page content -->
+<div class="right_col" role="main">
+
+    <div class="clearfix"></div>
+
+    <!-- po table -->
+    <div class="row">
+      <div class="col-md-12 col-sm-12 col-xs-12">
+        <div class="x_panel">
+          <div class="x_title">
+            <h3>Shipping Invoices <small>You can find all your shipping invoices listed here</small>
+
+              <a class="btn btn-primary" type="button" href="{% url 'shipping-invoice-add' %}"><i class="fa fa-upload" ></i> Upload Shipping Invoice</a>
+            </h3>
+            <div class="clearfix"></div>
+          </div>
+          <div class="x_content">
+            <table id="datatable" class="table table-striped table-bordered">
+              <thead>
+                <tr>
+                  <th>Invoice Number</th>
+                  <th>Invoice Date</th>
+                  <th>Invoice Status</th>
+                  <th>Order Number</th>
+                  <th>Actual Ship Date</th>
+                  <th>ISD Name</th>
+                  <th>ISD Code</th>
+                  <th>Invoice Amount</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for si in object_list %}
+                  <tr>
+                    <td><a  href="{% url 'shipping-invoice-detail' si.pk %}">{{ si.pk }}</a></td>
+                    <td>{{ si.invoice_date|date:"m/d/Y"  }}</td>
+                    <td>
+                      {% if si.invoice_status == 'I' %}
+                        <span class="label label-default">{{ si.get_invoice_status_display }}</span>
+                      {% elif si.invoice_status == 'P' %}
+                        <span class="label label-primary">{{ si.get_invoice_status_display }}</span>
+                      {% elif si.invoice_status == 'A' %}
+                        <span class="label label-success">{{ si.get_invoice_status_display }}</span>
+                      {% elif si.invoice_status == 'R' %}
+                        <span class="label label-danger">{{ si.get_invoice_status_display }}</span>
+                     {% endif %}
+                    </td>
+                    <td>{{ si.purchase_order.pk }}</td>
+                    <td>{{ si.actual_ship_date|date:"m/d/Y"  }}</td>
+                    <td>{{ si.purchase_order.isd_name }}</td>
+                    <td>{{ si.purchase_order.isd_code }}</td>
+                    <td>${{ si.invoice_amount }}</td>
+                    <td>
+                      <a href="{% url 'shipping-invoice-detail' si.pk %}" class="btn btn-xs btn-success">View</a>
+                    </td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- po table -->
+</div>
+<!-- /page content -->
+{% endblock %}
+
+{% block body_js %}
+  <script src="{% static "vendors/datatables.net/js/jquery.dataTables.min.js" %}"></script>
+  <script src="{% static "vendors/datatables.net-bs/js/dataTables.bootstrap.min.js" %}"></script>
+  <script>
+    $(document).ready(function() {
+      $('#datatable').dataTable({
+        "order": [[ 1, "desc" ]],
+        "columnDefs": [
+          { "type": "date", targets: [1, 4] },
+          { "searchable": false, "targets": [2, 8] },
+          { "sortable": false, "targets": [2, 3, 5, 6, 8] }
+        ]
+      });
+    });
+  </script>
+{% endblock %}
