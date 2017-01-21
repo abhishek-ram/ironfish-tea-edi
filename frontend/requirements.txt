@@ -1,4 +1,4 @@
 Django==1.10
 django-auth-ldap==1.2.8
 djangorestframework==3.5.1
-openpyxl=2.4.0
+openpyxl==2.4.0
