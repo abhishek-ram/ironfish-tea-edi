@@ -58,7 +58,7 @@ class PurchaseOrder(models.Model):
     order_id = models.CharField(max_length=30, primary_key=True)
     order_status = models.CharField(
         max_length=2, choices=ORDER_STATUSES, default='O')
-    # batch_id = models.CharField(max_length=30)
+    batch_id = models.CharField(max_length=30)
     order_date = models.DateField()
     ship_date = models.DateField()
     customer_po = models.CharField(max_length=30)
@@ -79,6 +79,7 @@ class PurchaseOrder(models.Model):
     owed_by_isd = models.DecimalField(
         max_digits=20, decimal_places=2, null=True)
     extra = models.DecimalField(max_digits=20, decimal_places=2, null=True)
+    is_ICEV = models.BooleanField(default=False)
 
     def __str__(self):
         return self.order_id
