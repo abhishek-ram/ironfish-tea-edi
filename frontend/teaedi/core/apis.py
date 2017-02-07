@@ -20,6 +20,7 @@ class CRUDPurchaseOrder(APIView):
             order_id='TEA%s' % request.data['Header']['OrderNumber'],
             order_date=request.data['Header']['OrderDate'],
             customer_po=request.data['Header']['OrderNumber'],
+            batch_id='TEA%s' % request.data['Header']['BatchNumber'],
             contract=request.data['Header']['RequisitionNumber'],
         )
         po.ship_date = \

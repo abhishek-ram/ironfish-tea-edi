@@ -22,6 +22,7 @@ recorddefs = {
         ['OrderNumber', 'M', 35, 'AN'],
         ['OrderDate', 'M', 20, 'AN'],
         ['RequisitionNumber', 'C', 35, 'AN'],
+        ['BatchNumber', 'C', 35, 'AN'],
         ['RequestedShipEarliest', 'C', 20, 'AN'],
         ['RequestedShipLatest', 'C', 20, 'AN'],
     ],

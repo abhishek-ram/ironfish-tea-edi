@@ -21,7 +21,13 @@ def main(inn, out):
     out.put({'BOTSID': 'Header',
              'RequisitionNumber': inn.get({'BOTSID': 'ST'},
                                           {'BOTSID': 'BEG', 'BEG06': None})})
-
+    out.put({'BOTSID': 'Header',
+             'BatchNumber':
+                 transform.datemask(
+                     order_date, 'CCYYMMDD', 'MMDDYY') +
+                 inn.ta_info['bots_accessenvelope'].children[0].get(
+                     {'BOTSID': 'ISA', 'ISA10': None})
+             })
     ship_date_begin = inn.get({'BOTSID': 'ST'},
                               {'BOTSID': 'DTM', 'DTM01': '010', 'DTM02': None})
     ship_date_begin_ce = inn.get({'BOTSID': 'ST'},
