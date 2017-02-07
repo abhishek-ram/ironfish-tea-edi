@@ -108,6 +108,7 @@ class PurchaseOrderLine(models.Model):
     sub_total = models.DecimalField(max_digits=20, decimal_places=2)
     ship_date = models.DateField(null=True)
     isbn = models.CharField(max_length=30)
+    description = models.TextField()
     student_edition = models.CharField(max_length=30)
     student_edition_cost = models.CharField(max_length=30)
     school_district_owes = models.CharField(max_length=30)

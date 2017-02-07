@@ -7,6 +7,7 @@ from django.core.mail import send_mail
 from django.template.loader import render_to_string
 from .models import PurchaseOrder, PurchaseOrderLine, Watcher
 from .models import School, SalesPerson, ShippingInvoice
+from .utils import GPWebService
 from decimal import Decimal
 
 
@@ -51,6 +52,7 @@ class CRUDPurchaseOrder(APIView):
                         po.salesperson = salesperson.name
         po.save()
 
+        gp_ws_client = GPWebService()
         order_total, order_total_extra = 0, 0
         for line in request.data['Header']['LineItem']:
             line_total = Decimal(
@@ -58,6 +60,10 @@ class CRUDPurchaseOrder(APIView):
             order_total += line_total
             order_total_extra += (
                 line_total + Decimal(line['SchoolDistrictOwes']))
+
+            gp_item_info = gp_ws_client.get_item_by_id(line['ISBN'])
+            if 'ICEV' in gp_item_info['Description']:
+                po.is_ICEV = True
 
             PurchaseOrderLine.objects.create(
                 purchase_order=po,
@@ -69,6 +75,7 @@ class CRUDPurchaseOrder(APIView):
                 sub_total=line_total,
                 ship_date=po.ship_date,
                 isbn=line['ISBN'],
+                description=gp_item_info['Description'],
                 student_edition=line['StudentEdition'],
                 student_edition_cost=line['StudentEditionCost'],
                 school_district_owes=line['SchoolDistrictOwes']
@@ -76,6 +83,7 @@ class CRUDPurchaseOrder(APIView):
 
         po.owed_by_isd = order_total
         po.extra = order_total_extra
+
         po.save()
 
         # Notify any watchers that are listening for New POs
