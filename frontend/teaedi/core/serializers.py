@@ -12,7 +12,11 @@ class ShippingInvoiceLineSerializer(serializers.ModelSerializer):
 class ShippingInvoiceSerializer(serializers.ModelSerializer):
     isd_name = serializers.CharField(source='purchase_order.isd_name')
     isd_code = serializers.CharField(source='purchase_order.isd_code')
-    lines = ShippingInvoiceLineSerializer(many=True)
+    contract = serializers.CharField(source='purchase_order.contract')
+    purchase_order = serializers.CharField(source='purchase_order.customer_po')
+    purchase_order_date = serializers.CharField(
+        source='purchase_order.order_date')
+    Lines = ShippingInvoiceLineSerializer(many=True, source='lines')
 
     class Meta:
         model = ShippingInvoice

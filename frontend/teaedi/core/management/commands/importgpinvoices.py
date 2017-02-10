@@ -44,7 +44,7 @@ class Command(BaseCommand):
                 # actual_ship_date=invoice_details['UserDefined']['Date01'],
                 boxes=invoice_details['UserDefined']['List01'] or 0,
                 weight=invoice_details['UserDefined']['Text01'] or 0,
-                shipping_cost=invoice_details['UserDefined']['List02'] or 0,
+                shipping_cost=int(invoice_details['UserDefined']['List02'] or 0),
                 tracking_number=invoice_details['UserDefined']['Text05'] or 0,
                 total_amount=invoice_details['TotalAmount']['Value']
             )

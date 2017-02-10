@@ -6,7 +6,7 @@ def connect(channeldict):
 
 
 def main(channeldict, filename, *args, **kwargs):
-    url = 'http://{}:{}/api/purchase_order'.format(
+    url = 'http://{}:{}/api/purchase_order/'.format(
         channeldict['host'], channeldict['port'])
     custom_headers = {
         'Authorization': 'Token {}'.format(channeldict['parameters']),
