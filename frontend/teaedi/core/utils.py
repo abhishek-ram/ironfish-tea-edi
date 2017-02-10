@@ -12,19 +12,13 @@ from requests import Session
 class GPTransport(Transport):
 
     def post_xml(self, address, envelope, headers):
-        """Post the envelope xml element to the given address with the headers.
-
-        This method is intended to be overriden if you want to customize the
-        serialization of the xml element. By default the body is formatted
-        and encoded as utf-8. See ``zeep.wsdl.utils.etree_to_string``.
-
-        """
+        """Update URL of tge webservice to public IP and then POST it"""
         message = etree_to_string(envelope)
         return self.post(
             address.replace('CEV-MSSQL', '66.76.19.198'), message, headers)
 
     def load(self, url):
-        """Load the content from the given URL"""
+        """Update URL of tge webservice to public IP and then GET it"""
         if not url:
             raise ValueError("No url given to load")
         actual_url = url.replace('CEV-MSSQL', '66.76.19.198')
@@ -55,7 +49,7 @@ class GPWebService(object):
     """Class for interacting with MS Dynamics GP Web Services"""
 
     def __init__(self):
-        #if not settings.DEBUG:
+        if settings.GP_WS_ENABLED:
             cache = SqliteCache()
             session = Session()
             session.auth = HttpNtlmAuth(
@@ -64,17 +58,18 @@ class GPWebService(object):
                 settings.GP_WS_URL,
                 transport=GPTransport(session=session, cache=cache)
             )
+            self.ws_factory1 = self.client.type_factory('ns1')
+            self.ws_factory2 = self.client.type_factory('ns2')
+            self.service_context = self.ws_factory2.Context(
+                OrganizationKey=self.ws_factory2.CompanyKey(),
+                CurrencyType='Local'
+            )
 
     def get_item_by_id(self, item_id):
-        #print 'jere'
-        #if settings.DEBUG:
-        #    print 'jere'
-        #    return {'Description': 'Product Description Here'}
-        #else:
-            factory1 = self.client.type_factory('ns1')
-            factory2 = self.client.type_factory('ns2')
-
-            context = factory2.Context(
-                OrganizationKey=factory2.CompanyKey(1), CurrencyType='Local')
+        if settings.GP_WS_ENABLED:
             return self.client.service.GetItemByKey(
-                key=factory1.ItemKey(Id=item_id), context=context)
+                key=self.ws_factory1.ItemKey(Id=item_id),
+                context=self.service_context
+            )
+        else:
+            return {'Description': 'Product Description Here'}

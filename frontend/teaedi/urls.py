@@ -18,6 +18,9 @@ urlpatterns = [
     url(r'^purchase_order/(?P<pk>[a-zA-Z0-9]+)/$',
         login_required(views.PurchaseOrderDetail.as_view()),
         name='po-detail'),
+    url(r'^purchase_order/(?P<pk>[a-zA-Z0-9]+)/reprocess/$',
+        login_required(views.PurchaseOrderReprocess.as_view()),
+        name='po-reprocess'),
 
     url(r'^shipping_invoice/$',
         login_required(views.ShippingInvoiceList.as_view()),

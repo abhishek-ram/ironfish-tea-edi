@@ -48,6 +48,20 @@ class PurchaseOrderDetail(DetailView):
     model = PurchaseOrder
 
 
+class PurchaseOrderReprocess(DetailView):
+    model = PurchaseOrder
+
+    def post(self, request, pk):
+        po = self.get_object()
+        po.order_status = 'O'
+        po.save()
+        messages.success(
+            request, 'Purchase Order {} has been re-opened and can now be '
+                     'imported in GP.'.format(pk))
+        return HttpResponseRedirect(
+            reverse_lazy('po-detail', args=[pk]))
+
+
 class ShippingInvoiceCreate(FormView):
     template_name = 'core/shippinginvoice_form.html'
     form_class = ShippingInvoiceForm

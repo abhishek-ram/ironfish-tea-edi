@@ -51,6 +51,7 @@ class PurchaseOrder(models.Model):
     ORDER_STATUSES = (
         ('O', 'Open'),
         ('P', 'Processed'),
+        ('E', 'Processing Error'),
         ('C', 'Cancelled'),
         ('M', 'Modified'),
     )
@@ -80,6 +81,7 @@ class PurchaseOrder(models.Model):
         max_digits=20, decimal_places=2, null=True)
     extra = models.DecimalField(max_digits=20, decimal_places=2, null=True)
     is_ICEV = models.BooleanField(default=False)
+    processing_error_txt = models.TextField(null=True, blank=True)
 
     def __str__(self):
         return self.order_id

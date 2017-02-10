@@ -67,8 +67,12 @@
                     <span class="label label-primary">{{ object.get_order_status_display }}</span>
                   {% elif object.order_status == 'P' %}
                     <span class="label label-success">{{ object.get_order_status_display }}</span>
-                  {% elif object.order_status == 'C' %}
+                  {% elif object.order_status == 'C'%}
                     <span class="label label-danger">{{ object.get_order_status_display }}</span>
+                  {% elif object.order_status == 'E'%}
+                    <span class="label label-danger" data-toggle="tooltip" data-placement="right"
+                          title="{{object.processing_error_txt}}">{{object.get_order_status_display}}
+                    </span>
                   {% elif object.order_status == 'M' %}
                     <span class="label label-warning">{{ object.get_order_status_display }}</span>
                   {% endif %}
@@ -126,8 +130,17 @@
               <!-- this row will not appear when printing -->
               <div class="row no-print">
                 <div class="col-xs-12">
+                  <button class="btn btn-primary pull-right"
+                          onclick="window.print();"><i class="fa fa-print"></i> Print</button>
+                  {% if object.order_status == 'P' or object.order_status == 'E'%}
+                    <form method="post" action="{% url 'po-reprocess' object.pk %}">
+                      {% csrf_token %}
+                      <button class="btn btn-danger pull-right">
+                        <i class="fa fa-history"></i> Reopen Order
+                      </button>
+                    </form>
+                  {% endif %}
 
-                  <button class="btn btn-primary pull-right" onclick="window.print();"><i class="fa fa-print"></i> Print</button>
                 </div>
               </div>
             </section>
