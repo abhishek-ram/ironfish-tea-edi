@@ -40,7 +40,8 @@ class Command(BaseCommand):
                 purchase_order=purchase_order,
                 invoice_id=invoice_id,
                 invoice_date=invoice_details['InvoiceDate'],
-                actual_ship_date=invoice_details['UserDefined']['Date01'],
+                actual_ship_date=invoice_details['InvoiceDate'],
+                # actual_ship_date=invoice_details['UserDefined']['Date01'],
                 isd_name=invoice_details['ShipToAddress']['Line2'],
                 isd_code=invoice_details['ShipToAddressKey']['Id'],
                 boxes=invoice_details['UserDefined']['List01'] or 0,
@@ -52,13 +53,14 @@ class Command(BaseCommand):
 
             for line in invoice_details['Lines']['SalesInvoiceLine']:
                 isbn = line['ItemKey']['Id']
+                quantity = line['Quantity']['Value']
                 po_line = PurchaseOrderLine.objects.get(
-                    purchase_order=purchase_order, isbn=isbn)
+                    purchase_order=purchase_order, isbn=isbn, quantity=quantity)
                 # Create the shipping invoice line object.
                 ShippingInvoiceLine.objects.create(
                     shipping_invoice=shipping_invoice,
                     sequence=po_line.sequence,
-                    quantity=line['Quantity']['Value'],
+                    quantity=quantity,
                     quantity_uom=po_line.quantity_uom,
                     unit_price=line['UnitPrice']['Value'],
                     total_amount=line['TotalAmount']['Value'],

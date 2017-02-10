@@ -80,9 +80,9 @@ class GPWebService(object):
     def get_invoice_list(self, customer_id):
         if settings.GP_WS_ENABLED:
             criteria = {
-                'TransactionState': self.ws_factory2.ListRestrictionOfNullableOfSalesTransactionState(
+                'TransactionState': self.ws_factory1.ListRestrictionOfNullableOfSalesTransactionState(
                     'Work'),
-                'CustomerId': self.ws_factory2.LikeRestrictionOfString(
+                'CustomerId': self.ws_factory1.LikeRestrictionOfString(
                     customer_id),
                 'Scope': 'Return All'
             }
@@ -101,7 +101,7 @@ class GPWebService(object):
     def get_invoice_detail(self, invoice_id):
 
         if settings.GP_WS_ENABLED:
-            self.client.service.GetSalesInvoiceByKey(
+            return self.client.service.GetSalesInvoiceByKey(
                 key={'Id': invoice_id}, context=self.service_context)
 
         else:
