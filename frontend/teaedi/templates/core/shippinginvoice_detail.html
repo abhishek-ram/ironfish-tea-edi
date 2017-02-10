@@ -32,7 +32,7 @@
               <div class="row invoice-info">
                 <div class="col-sm-3 invoice-col">
                   <address>
-                      <strong>{{object.purchase_order.isd_name}}</strong>
+                      <strong>{{object.isd_name}}</strong>
                       <br>{{ object.purchase_order.address_line1 }}
                       {% if object.purchase_order.address_line2 %}<br>{{ object.purchase_order.address_line2 }} {% endif %}
                       <br>{{ object.purchase_order.city}}, {{ object.purchase_order.state }} {{ object.purchase_order.zip }}
@@ -40,7 +40,7 @@
                 </div>
                 <!-- /.col -->
                 <div class="col-sm-3 invoice-col">
-                  <b>ISD #:</b> {{ object.purchase_order.isd_code }}
+                  <b>ISD #:</b> {{ object.isd_code }}
                 </div>
                 <!-- /.col -->
                 <div class="col-sm-3 invoice-col">
@@ -100,11 +100,11 @@
                           <td>{{ object.pk }}</td>
                           <td>{{ line.sequence }}</td>
                           <td>{{ line.isbn }}</td>
-                          <td>Some Description Here</td>
+                          <td>{{ line.description }}</td>
                           <td>{{ line.quantity }}</td>
                           <td>{{ line.school_district_owes }}</td>
                           <td>{{ line.unit_price }}</td>
-                          <td>{{ line.sub_total }}</td>
+                          <td>{{ line.total_amount }}</td>
                       </tr>
                     {% endfor %}
                     </tbody>
@@ -133,19 +133,19 @@
                       <tbody>
                         <tr>
                           <th style="width:50%">Subtotal:</th>
-                          <td>${{object.invoice_amount}}</td>
+                          <td>${{object.total_amount}}</td>
                         </tr>
                         <!--<tr>-->
                           <!--<th>Tax (9.3%)</th>-->
                           <!--<td>$10.34</td>-->
                         <!--</tr>-->
                         <tr>
-                          <th>Shipping:</th>
+                          <th>Shipping (Payed by seller):</th>
                           <td>${{object.shipping_cost}}</td>
                         </tr>
                         <tr>
                           <th>Total:</th>
-                          <td>${{ object.invoice_total }}</td>
+                          <td>${{ object.total_amount }}</td>
                         </tr>
                       </tbody>
                     </table>
@@ -157,20 +157,8 @@
               <!-- this row will not appear when printing -->
               <div class="row no-print">
                 <div class="col-xs-12">
-                  {% if object.invoice_status == 'I' %}
-                    <button class="btn btn-danger pull-right"
-                            onclick="confirmDelete('{% url 'shipping-invoice-delete' object.pk %}', '{{ object.pk }}')">
-                      <i class="fa fa-close"></i> Delete Invoice
-                    </button>
-                    <form method="post">
-                      {% csrf_token %}
-                      <button class="btn btn-success pull-right">
-                        <i class="fa fa-credit-card"></i> Confirm Invoice
-                      </button>
-                    </form>
-                  {% else %}
-                    <button class="btn btn-primary pull-right" onclick="window.print();"><i class="fa fa-print"></i> Print</button>
-                  {% endif %}
+                  <button class="btn btn-primary pull-right"
+                          onclick="window.print();"><i class="fa fa-print"></i> Print</button>
                 </div>
               </div>
             </section>

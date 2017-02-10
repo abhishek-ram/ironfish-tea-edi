@@ -142,12 +142,16 @@ class ShippingInvoice(models.Model):
         PurchaseOrder, on_delete=models.CASCADE,
         related_name='shipping_invoice'
     )
+    isd_name = models.CharField(max_length=100)
+    isd_code = models.CharField(max_length=30)
+    carrier_name = models.CharField(max_length=100, default='UPS')
+    carrier_code = models.CharField(max_length=30, default='111')
     actual_ship_date = models.DateField()
     boxes = models.IntegerField()
     weight = models.IntegerField()
     shipping_cost = models.DecimalField(max_digits=20, decimal_places=2)
     tracking_number = models.CharField(max_length=100)
-    invoice_amount = models.DecimalField(max_digits=20, decimal_places=2)
+    total_amount = models.DecimalField(max_digits=20, decimal_places=2)
 
     def __str__(self):
         return self.invoice_id
@@ -162,7 +166,6 @@ class ShippingInvoiceLine(models.Model):
         ('BK', 'Book'),
         ('KT', 'Kit'),
         ('SP', 'Software Product'),
-        # ('EA', 'EACH')
     )
 
     shipping_invoice = models.ForeignKey(
@@ -172,9 +175,10 @@ class ShippingInvoiceLine(models.Model):
     quantity_uom = models.CharField(
         max_length=2, choices=QUANTITY_UOM_CHOICES)
     unit_price = models.DecimalField(max_digits=20, decimal_places=2)
-    # sub_total = models.DecimalField(max_digits=20, decimal_places=2)
+    total_amount = models.DecimalField(max_digits=20, decimal_places=2)
     actual_ship_date = models.DateField(null=True)
     isbn = models.CharField(max_length=30)
+    description = models.TextField()
     student_edition = models.CharField(max_length=30)
     student_edition_cost = models.CharField(max_length=30)
     school_district_owes = models.CharField(max_length=30, null=True)
@@ -191,7 +195,7 @@ class Watcher(models.Model):
     EVENT_CHOICES = (
         ('PO_NEW', 'New Purchase Order Imported'),
         ('PO_UPD', 'Purchase Order Updated/Cancelled'),
-        # ('SI_PRO', 'Shipping and Invoice Document Processed'),
+        ('SI_PRO', 'Shipping and Invoice Document Processed'),
         ('SI_ACK', 'Shipping and Invoice Document Acknowledged')
     )
 
