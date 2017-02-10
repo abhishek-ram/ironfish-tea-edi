@@ -156,7 +156,7 @@
                     </td>
                     <td>{{ si.purchase_order.pk }}</td>
                     <td>{{ si.actual_ship_date|date:"m/d/Y"  }}</td>
-                    <td>{{ si.isd_name }}</td>
+                    <td>{{ si.purchase_order.isd_name }}</td>
                     <td>${{ si.total_amount }}</td>
                     <td>
                       <a href="{% url 'shipping-invoice-detail' si.pk %}" class="btn btn-xs btn-success">View</a>
@@ -175,46 +175,7 @@
 
   <!-- Second Row Boxes-->
   <div class="row">
-    <div class="col-md-6 col-sm-6 col-xs-12">
-      <div class="x_panel">
-        <div class="x_title">
-          <h3>Upload New Shipping Invoice</h3>
-          <div class="clearfix"></div>
-        </div>
-        <div class="x_content">
-          <form class="form-horizontal form-label-left" action="{% url 'shipping-invoice-add' %}"
-                method="post" enctype="multipart/form-data">
-              {% csrf_token %}
-              <div class="form-group">
-                <label class="control-label col-md-3" for="id_header_file">TEA Header File <span class="required">*</span>
-                </label>
-                <div class="col-md-7">
-                  <input type="file" id="id_header_file" required="required"
-                         name="header_file" class="form-control col-md-7 col-xs-12">
-                </div>
 
-              </div>
-              <div class="form-group">
-                <label class="control-label col-md-3" for="id_detail_file">TEA Detail File <span class="required">*</span>
-                </label>
-                <div class="col-md-7">
-                  <input type="file" id="id_detail_file" required="required"
-                         name="detail_file" class="form-control col-md-7 col-xs-12">
-                </div>
-
-              </div>
-              <div class="ln_solid"></div>
-              <div class="form-group">
-                <div class="col-md-7 col-md-offset-3">
-                  <input type="submit" class="btn btn-success" value="Create Shipping Invoice"/>
-                </div>
-              </div>
-          </form>
-          <br>
-          <br>
-        </div>
-      </div>
-    </div>
     <div class="col-md-6 col-sm-6 col-xs-12">
       <div class="x_panel">
         <div class="x_title">

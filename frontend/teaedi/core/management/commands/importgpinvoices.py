@@ -1,7 +1,7 @@
 from django.core.management.base import BaseCommand, CommandError
 from django.db import transaction
-from teaedi.core.utils import GPWebService
-from teaedi.core.models import ShippingInvoice, ShippingInvoiceLine, \
+from ....core.utils import GPWebService
+from ....core.models import ShippingInvoice, ShippingInvoiceLine, \
     PurchaseOrder, PurchaseOrderLine
 import logging
 
@@ -42,8 +42,6 @@ class Command(BaseCommand):
                 invoice_date=invoice_details['InvoiceDate'],
                 actual_ship_date=invoice_details['InvoiceDate'],
                 # actual_ship_date=invoice_details['UserDefined']['Date01'],
-                isd_name=invoice_details['ShipToAddress']['Line2'],
-                isd_code=invoice_details['ShipToAddressKey']['Id'],
                 boxes=invoice_details['UserDefined']['List01'] or 0,
                 weight=invoice_details['UserDefined']['Text01'] or 0,
                 shipping_cost=invoice_details['UserDefined']['List02'] or 0,

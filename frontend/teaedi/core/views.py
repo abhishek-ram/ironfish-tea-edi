@@ -62,78 +62,6 @@ class PurchaseOrderReprocess(DetailView):
             reverse_lazy('po-detail', args=[pk]))
 
 
-class ShippingInvoiceCreate(FormView):
-    template_name = 'core/shippinginvoice_form.html'
-    form_class = ShippingInvoiceForm
-
-    def form_valid(self, form):
-        """Create the shipping invoice object and related line items"""
-        header_data = form.cleaned_data['header_file']
-        detail_data = form.cleaned_data['detail_file']
-
-        # Check if the invoice already exists in the DB
-        if ShippingInvoice.objects.filter(pk=header_data[12]).exists():
-            messages.error(
-                self.request, 'Invoice with this ID already '
-                              'exists in the database.')
-            return HttpResponseRedirect(reverse_lazy('shipping-invoice-add'))
-
-        # Fetch the PO related to this invoice from the DB
-        original_po = PurchaseOrder.objects.filter(pk=header_data[0]).first()
-        if not original_po:
-            messages.error(
-                self.request, 'Failed to create shipping Invoice. '
-                              'Original PO not found in the database')
-            return HttpResponseRedirect(reverse_lazy('shipping-invoice-add'))
-
-        try:
-            # Create the shipping invoice object.
-            si = ShippingInvoice.objects.create(
-                purchase_order=original_po,
-                invoice_id=header_data[12],
-                invoice_date=header_data[10],
-                actual_ship_date=header_data[1],
-                boxes=header_data[2],
-                weight=header_data[3],
-                shipping_cost=header_data[4],
-                tracking_number=header_data[5],
-                invoice_amount=header_data[8]
-            )
-
-            quantity_uom_codes = {
-                v: k for k, v in ShippingInvoiceLine.QUANTITY_UOM_CHOICES}
-            for line in detail_data:
-                po_line = PurchaseOrderLine.objects.get(
-                    purchase_order=original_po, isbn=line[3])
-                # Create the shipping invoice line object.
-                ShippingInvoiceLine.objects.create(
-                    shipping_invoice=si,
-                    sequence=po_line.sequence,
-                    quantity=line[1],
-                    quantity_uom=quantity_uom_codes[line[4]],
-                    unit_price=line[2],
-                    isbn=line[3],
-                    actual_ship_date=line[5],
-                    student_edition=po_line.student_edition,
-                    student_edition_cost=po_line.student_edition_cost,
-                    school_district_owes=po_line.student_edition_cost,
-                )
-        except Exception:
-            logger.error('Failed to process invoice {}, Detailed '
-                         'error is \n {}'.format(header_data[12],
-                                                 format_exc()))
-            messages.error(
-                self.request, 'Failed to create shipping Invoice. '
-                              'Unknown processing error, contact site admin.')
-            return HttpResponseRedirect(reverse_lazy('shipping-invoice-add'))
-        else:
-            messages.success(
-                self.request, 'Shipping Invoice {} created '
-                              'successfully.'.format(si.invoice_id))
-            return HttpResponseRedirect(
-                reverse_lazy('shipping-invoice-detail', args=[si.invoice_id]))
-
-
 class ShippingInvoiceList(ListView):
     model = ShippingInvoice
 
@@ -141,65 +69,19 @@ class ShippingInvoiceList(ListView):
 class ShippingInvoiceDetail(DetailView):
     model = ShippingInvoice
 
-    def post(self, request, pk):
-        si = self.get_object()
-        output_filename = os.path.join(
-            settings.TEAEDI['SHIPPING_INVOICE']['EXPORT_FOLDER'],
-            'Invoice_{}_{}.csv'.format(pk, int(time.time())))
-        with open(output_filename, 'wb') as csv_file:
-            csv_writer = csv.writer(csv_file, quoting=csv.QUOTE_MINIMAL)
-            csv_writer.writerow([
-                'Header',
-                '17528036696002',
-                'TEXASEDUAGENCY',
-                pk,
-                si.invoice_date.strftime('%Y%m%d'),
-                si.boxes,
-                si.weight,
-                si.shipping_cost,
-                si.tracking_number,
-                si.purchase_order.isd_name,
-                si.purchase_order.isd_code,
-                si.invoice_amount,
-                si.purchase_order.pk,
-                0,
-                si.purchase_order.order_date.strftime('%Y%m%d'),
-                si.purchase_order.contract
-            ])
 
-            for line in si.lines.all():
-                csv_writer.writerow([
-                    'LineItem',
-                    line.sequence,
-                    line.unit_price,
-                    line.isbn,
-                    line.student_edition,
-                    line.student_edition_cost,
-                    line.quantity,
-                    line.quantity_uom,
-                    line.actual_ship_date.strftime('%Y%m%d')
-                ])
-
-        si.invoice_status = 'P'
-        si.save()
-        messages.success(
-            request, 'Shipping Invoice {} has been sent to TEA.'.format(pk))
-        return HttpResponseRedirect(
-            reverse_lazy('shipping-invoice-detail', args=[pk]))
-
-
-class ShippingInvoiceDelete(DeleteView):
-    model = ShippingInvoice
-    success_url = reverse_lazy('shipping-invoice-list')
-
-    def delete(self, request, *args, **kwargs):
-        self.object = self.get_object()
-        messages.success(
-            request, 'Invoice "{0.invoice_id}" for order {0.purchase_order.pk}'
-                     ' has been deleted successfully'.format(self.object)
-        )
-        self.object.delete()
-        return HttpResponseRedirect(self.get_success_url())
+# class ShippingInvoiceDelete(DeleteView):
+#     model = ShippingInvoice
+#     success_url = reverse_lazy('shipping-invoice-list')
+#
+#     def delete(self, request, *args, **kwargs):
+#         self.object = self.get_object()
+#         messages.success(
+#             request, 'Invoice "{0.invoice_id}" for order {0.purchase_order.pk}'
+#                      ' has been deleted successfully'.format(self.object)
+#         )
+#         self.object.delete()
+#         return HttpResponseRedirect(self.get_success_url())
 
 
 class SchoolList(ListView):

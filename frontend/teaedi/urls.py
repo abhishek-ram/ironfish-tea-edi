@@ -25,15 +25,9 @@ urlpatterns = [
     url(r'^shipping_invoice/$',
         login_required(views.ShippingInvoiceList.as_view()),
         name='shipping-invoice-list'),
-    url(r'^shipping_invoice/add/$',
-        login_required(views.ShippingInvoiceCreate.as_view()),
-        name='shipping-invoice-add'),
     url(r'^shipping_invoice/(?P<pk>[a-zA-Z0-9]+)/$',
         login_required(views.ShippingInvoiceDetail.as_view()),
         name='shipping-invoice-detail'),
-    url(r'shipping_invoice/(?P<pk>[0-9]+)/delete/$',
-        login_required(views.ShippingInvoiceDelete.as_view()),
-        name='shipping-invoice-delete'),
 
     url(r'school/$',
         login_required(views.SchoolList.as_view()),
@@ -69,8 +63,11 @@ urlpatterns = [
         name='watcher-update'),
 
     # URLs for the TEAEDI REST API
-    url(r'^api/purchase_order', apis.CRUDPurchaseOrder.as_view()),
-    url(r'^api/process_acknowledgment', apis.ProcessAcknowledgment.as_view()),
+    url(r'^api/purchase_order/$', apis.CRUDPurchaseOrder.as_view()),
+    url(r'^api/process_acknowledgment/$', apis.ProcessAcknowledgment.as_view()),
+    url(r'^api/shipping_invoice/$', apis.ShippingInvoiceList.as_view()),
+    url(r'^api/shipping_invoice/(?P<pk>[0-9]+)/processed/$',
+        apis.ShippingInvoiceMarkProcessed.as_view()),
 
     url(r'^.*', login_required(views.Index.as_view())),
 ] 

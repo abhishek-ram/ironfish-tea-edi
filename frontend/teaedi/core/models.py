@@ -142,8 +142,6 @@ class ShippingInvoice(models.Model):
         PurchaseOrder, on_delete=models.CASCADE,
         related_name='shipping_invoice'
     )
-    isd_name = models.CharField(max_length=100)
-    isd_code = models.CharField(max_length=30)
     carrier_name = models.CharField(max_length=100, default='UPS')
     carrier_code = models.CharField(max_length=30, default='111')
     actual_ship_date = models.DateField()

@@ -52,7 +52,7 @@ class GPWebService(object):
 
     def __init__(self):
         if settings.GP_WS_ENABLED:
-            cache = SqliteCache()
+            cache = SqliteCache(timeout=30 * 24 * 60 * 60)
             session = Session()
             session.auth = HttpNtlmAuth(
                 settings.GP_WS_USERNAME, settings.GP_WS_PASSWORD)

@@ -1,18 +1,23 @@
 from __future__ import unicode_literals
 from rest_framework.views import APIView
+from rest_framework.generics import ListAPIView
 from rest_framework.response import Response
 from rest_framework.parsers import JSONParser
 from rest_framework.authentication import TokenAuthentication
+from rest_framework.permissions import IsAuthenticated
+from django.shortcuts import get_object_or_404
 from django.core.mail import send_mail
 from django.template.loader import render_to_string
 from .models import PurchaseOrder, PurchaseOrderLine, Watcher
 from .models import School, SalesPerson, ShippingInvoice
 from .utils import GPWebService
+from .serializers import ShippingInvoiceSerializer
 from decimal import Decimal
 
 
 class CRUDPurchaseOrder(APIView):
     authentication_classes = (TokenAuthentication,)
+    permission_classes = (IsAuthenticated,)
     parser_classes = (JSONParser,)
 
     def post(self, request):
@@ -182,8 +187,28 @@ class CRUDPurchaseOrder(APIView):
         return Response({'status': 'OK'})
 
 
+class ShippingInvoiceList(ListAPIView):
+    authentication_classes = (TokenAuthentication,)
+    permission_classes = (IsAuthenticated,)
+    queryset = ShippingInvoice.objects.filter(invoice_status='I')
+    serializer_class = ShippingInvoiceSerializer
+
+
+class ShippingInvoiceMarkProcessed(APIView):
+    authentication_classes = (TokenAuthentication,)
+    permission_classes = (IsAuthenticated,)
+
+    def post(self, request, pk):
+        """Endpoint for marking Shipping Invoices as processed"""
+        shipping_invoice = get_object_or_404(ShippingInvoice, pk=pk)
+        shipping_invoice.invoice_status = 'P'
+        shipping_invoice.save()
+        return Response({'status': 'OK'})
+
+
 class ProcessAcknowledgment(APIView):
     authentication_classes = (TokenAuthentication,)
+    permission_classes = (IsAuthenticated,)
     parser_classes = (JSONParser,)
 
     ACK_ERROR_CODES = {
