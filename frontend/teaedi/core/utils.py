@@ -60,8 +60,9 @@ class GPWebService(object):
             )
             self.ws_factory1 = self.client.type_factory('ns1')
             self.ws_factory2 = self.client.type_factory('ns2')
+            company = self.ws_factory2.CompanyKey(settings.GP_COMPANY_ID)
             self.service_context = self.ws_factory2.Context(
-                OrganizationKey=self.ws_factory2.CompanyKey(),
+                OrganizationKey=company,
                 CurrencyType='Local'
             )
 
