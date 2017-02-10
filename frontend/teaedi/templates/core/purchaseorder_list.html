@@ -45,6 +45,10 @@
                         <span class="label label-success">{{ po.get_order_status_display }}</span>
                       {% elif po.order_status == 'C' %}
                         <span class="label label-danger">{{ po.get_order_status_display }}</span>
+                      {% elif object.order_status == 'E'%}
+                        <span class="label label-danger" data-toggle="tooltip" data-placement="right"
+                              title="{{object.processing_error_txt}}">{{object.get_order_status_display}}
+                        </span>
                       {% elif po.order_status == 'M' %}
                         <span class="label label-warning">{{ po.get_order_status_display }}</span>
                       {% endif %}
