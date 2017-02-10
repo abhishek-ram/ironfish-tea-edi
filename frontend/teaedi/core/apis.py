@@ -62,7 +62,7 @@ class CRUDPurchaseOrder(APIView):
                 line_total + Decimal(line['SchoolDistrictOwes']))
 
             gp_item_info = gp_ws_client.get_item_by_id(line['ISBN'])
-            if 'ICEV' in gp_item_info['Description']:
+            if 'ICEV' in gp_item_info['Description'].upper():
                 po.is_ICEV = True
 
             PurchaseOrderLine.objects.create(

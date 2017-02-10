@@ -54,8 +54,8 @@ class GPTransport(Transport):
 class GPWebService(object):
     """Class for interacting with MS Dynamics GP Web Services"""
 
-    def __index__(self):
-        if not settings.DEBUG:
+    def __init__(self):
+        #if not settings.DEBUG:
             cache = SqliteCache()
             session = Session()
             session.auth = HttpNtlmAuth(
@@ -66,11 +66,11 @@ class GPWebService(object):
             )
 
     def get_item_by_id(self, item_id):
-        print 'jere'
-        if settings.DEBUG:
-            print 'jere'
-            return {'Description': 'Product Description Here'}
-        else:
+        #print 'jere'
+        #if settings.DEBUG:
+        #    print 'jere'
+        #    return {'Description': 'Product Description Here'}
+        #else:
             factory1 = self.client.type_factory('ns1')
             factory2 = self.client.type_factory('ns2')
 
