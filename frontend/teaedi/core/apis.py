@@ -97,7 +97,7 @@ class CRUDPurchaseOrder(APIView):
         if watchers:
             email_body = render_to_string(
                 'emails/purchaseorder_new.html', {'po': po})
-            send_mail('New Purchase Order Notification',
+            send_mail('[TEAEDI] New Purchase Order Notification',
                       from_email='',
                       recipient_list=watchers,
                       message='',
@@ -179,7 +179,7 @@ class CRUDPurchaseOrder(APIView):
         if watchers:
             email_body = render_to_string(
                 'emails/purchaseorder_change.html', email_context)
-            send_mail('Purchase Order Change Notification',
+            send_mail('[TEAEDI] Purchase Order Change Notification',
                       from_email='',
                       recipient_list=watchers,
                       message='',
@@ -200,9 +200,25 @@ class ShippingInvoiceMarkProcessed(APIView):
 
     def post(self, request, pk):
         """Endpoint for marking Shipping Invoices as processed"""
+
+        # Get the shipping invoice object and update its status
         shipping_invoice = get_object_or_404(ShippingInvoice, pk=pk)
         shipping_invoice.invoice_status = 'P'
         shipping_invoice.save()
+
+        # Notify any watchers that are listening for SI Processed
+        watchers = [w.email_id for w in
+                    Watcher.objects.filter(events__contains='SI_PRO')]
+        if watchers:
+            email_body = render_to_string(
+                'emails/shippinginvoice_processed.html',
+                {'si': shipping_invoice}
+            )
+            send_mail('[TEAEDI] Shipping Invoice Processed Notification',
+                      from_email='',
+                      recipient_list=watchers,
+                      message='',
+                      html_message=email_body)
         return Response({'status': 'OK'})
 
 
@@ -246,8 +262,9 @@ class ProcessAcknowledgment(APIView):
                             'the administrator for assistance in resolving the'
                             ' issue.') % self.ACK_ERROR_CODES[transaction['AdvStatus']]
 
-                    send_mail('Shipping Invoice Acknowledgment Notification',
-                              from_email='',
-                              recipient_list=watchers,
-                              message=email_body)
+                    send_mail(
+                        '[TEAEDI] Shipping Invoice Acknowledgment Notification',
+                        from_email='', recipient_list=watchers,
+                        message=email_body
+                    )
         return Response({'status': 'OK'})

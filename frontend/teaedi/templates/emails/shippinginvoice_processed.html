@@ -17,29 +17,32 @@
   <!--</head>-->
   <body>
     <p>
-      New Purchase order {{po.order_id}} has been received. The details of the purchase order can be found below.
-    We request you run the PO Import Integration in MS Dynamics GP so that this order in imported.
+      Invoice <b>{{si.invoice_id}}</b> has been processed and sent to TEA. The details of the invoice can be found below.
+      An email will be sent again once the Invoice has been processed by TEA.
+
     </p>
     <br/>
-    <b>ISD #:</b> {{ po.isd_code }}
+    <b>ISD #:</b> {{ si.purchase_order.isd_code }}
     <br>
-    <strong>{{po.isd_name}}</strong>
-    <br>{{ po.address_line1 }}
-    {% if po.address_line2 %}<br>{{ po.address_line2 }} {% endif %}
-    <br>{{ po.city}}, {{ po.state }} {{ po.zip }}
+    <strong>{{si.purchase_order.isd_name}}</strong>
+    <br>{{ si.purchase_order.address_line1 }}
+    {% if si.purchase_order.address_line2 %}<br>{{ si.purchase_order.address_line2 }} {% endif %}
+    <br>{{ si.purchase_order.city}}, {{ si.purchase_order.state }} {{ po.zip }}
     <br>
-    <b>Sales ID:</b> {{po.sales_id}}
+    <b>Boxes:</b> {{si.boxes}}
     <br>
-    <b>Salesperson:</b> {{po.salesperson}}
+    <b>Weight:</b> {{si.weight}}
     <br>
-    <b>Ship Date:</b> {{po.ship_date|date:"m/d/Y"}}
+    <b>Tracking Number:</b> {{si.tracking_number}}
     <br>
-    <b>Customer PO:</b> {{po.customer_po}}
+    <b>Actual Ship Date:</b> {{si.actual_ship_date|date:"m/d/Y"}}
     <br>
-    <b>Contract #:</b> {{po.contract}}
+    <b>Customer PO:</b> {{si.purchase_order.customer_po}}
+    <br>
+    <b>Contract #:</b> {{si.purchase_order.order_date|date:"m/d/Y"}}
     <br/>
     <br/>
-    <h4>PO Line Items</h4>
+    <h4>Invoice Line Items</h4>
     <table style="border:1px solid black;table-layout:fixed;width:800px;">
       <thead>
         <tr>
@@ -47,20 +50,20 @@
           <th style="border:1px solid black;overflow:hidden;width:100px;">ISBN #</th>
           <th style="border:1px solid black;overflow:hidden;width:100px;width: 30%;">ISBN Title</th>
           <th style="border:1px solid black;overflow:hidden;width:100px;">Line Qty</th>
-          <th style="border:1px solid black;overflow:hidden;width:100px;">Ext. Cost</th>
+          <th style="border:1px solid black;overflow:hidden;width:100px;">Student Edition</th>
           <th style="border:1px solid black;overflow:hidden;width:100px;">Unit Price</th>
           <th style="border:1px solid black;overflow:hidden;width:100px;">Subtotal</th>
         </tr>
       </thead>
       <tbody>
-        {% for line in po.lines.all %}
+        {% for line in si.lines.all %}
 
         <tr>
           <td style="border:1px solid black;overflow:hidden;width:100px;">{{ line.sequence }}</td>
           <td style="border:1px solid black;overflow:hidden;width:100px;">{{ line.isbn }}</td>
           <td style="border:1px solid black;overflow:hidden;width:100px;">{{ line.description }}</td>
           <td style="border:1px solid black;overflow:hidden;width:100px;">{{ line.quantity }}</td>
-          <td style="border:1px solid black;overflow:hidden;width:100px;">{{ line.school_district_owes }}</td>
+          <td style="border:1px solid black;overflow:hidden;width:100px;">{{ line.student_edition }}</td>
           <td style="border:1px solid black;overflow:hidden;width:100px;">{{ line.unit_price }}</td>
           <td style="border:1px solid black;overflow:hidden;width:100px;">{{ line.sub_total }}</td>
         </tr>
