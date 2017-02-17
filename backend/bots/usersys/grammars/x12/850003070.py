@@ -2,7 +2,7 @@ from bots.botsconfig import *
 from records003070 import recorddefs
 
 syntax = { 
-        'version'    :  '00403',    #version of ISA to send
+        'version'    :  '00307',    #version of ISA to send
         'functionalgroup'    :  'PO',
         }
 
