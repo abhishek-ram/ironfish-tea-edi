@@ -39,9 +39,10 @@ class Command(BaseCommand):
             shipping_invoice = ShippingInvoice.objects.create(
                 purchase_order=purchase_order,
                 invoice_id=invoice_id,
-                invoice_date=invoice_details['InvoiceDate'],
-                actual_ship_date=invoice_details['InvoiceDate'],
-                # actual_ship_date=invoice_details['UserDefined']['Date01'],
+                # invoice_date=invoice_details['InvoiceDate'],
+                # actual_ship_date=invoice_details['InvoiceDate'],
+                invoice_date=invoice_details['UserDefined']['Date01'],
+                actual_ship_date=invoice_details['UserDefined']['Date01'],
                 boxes=invoice_details['UserDefined']['List01'] or 0,
                 weight=invoice_details['UserDefined']['Text01'] or 0,
                 shipping_cost=int(invoice_details['UserDefined']['List02'] or 0),
