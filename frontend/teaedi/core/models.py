@@ -128,6 +128,7 @@ class PurchaseOrderLine(models.Model):
 class ShippingInvoice(models.Model):
     INVOICE_STATUSES = (
         ('I', 'Imported'),
+        ('RP', 'Ready for Processing'),
         ('P', 'Processed'),
         ('A', 'Accepted'),
         ('E', 'Accepted with Error'),
@@ -193,6 +194,7 @@ class Watcher(models.Model):
     EVENT_CHOICES = (
         ('PO_NEW', 'New Purchase Order Imported'),
         ('PO_UPD', 'Purchase Order Updated/Cancelled'),
+        ('PO_RPT', 'Batch Purchase Order Report'),
         ('SI_PRO', 'Shipping and Invoice Document Processed'),
         ('SI_ACK', 'Shipping and Invoice Document Acknowledged')
     )

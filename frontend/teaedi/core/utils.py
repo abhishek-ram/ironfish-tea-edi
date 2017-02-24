@@ -112,6 +112,14 @@ class GPWebService(object):
                     },
                     'Id': '092306'
                 },
+                'BatchKey': {
+                    'CompanyKey': {
+                        'Id': 1L
+                    },
+                    'Source': 'Sales Entry',
+                    'Id': 'Transfer 02/24',
+                    'CreatedDateTime': datetime.datetime(1900, 1, 1, 0, 0)
+                },
                 'Type': 'Invoice',
                 'Date': datetime.datetime(2017, 2, 8, 0, 0),
                 'CustomerName': 'Texas Education Agency',

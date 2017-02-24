@@ -190,7 +190,7 @@ class CRUDPurchaseOrder(APIView):
 class ShippingInvoiceList(ListAPIView):
     authentication_classes = (TokenAuthentication,)
     permission_classes = (IsAuthenticated,)
-    queryset = ShippingInvoice.objects.filter(invoice_status='I')
+    queryset = ShippingInvoice.objects.filter(invoice_status='RP')
     serializer_class = ShippingInvoiceSerializer
 
 
