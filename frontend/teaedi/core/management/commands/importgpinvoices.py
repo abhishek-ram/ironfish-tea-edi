@@ -20,7 +20,6 @@ class Command(BaseCommand):
             gp_ws = GPWebService()
             for invoice in gp_ws.get_invoice_list('7TEX701'):
                 invoice_id = invoice['Key']['Id']
-                ss
                 logger.info('Begin import of invoice {} from GP'.format(
                     invoice_id))
 
@@ -33,8 +32,8 @@ class Command(BaseCommand):
                     invoice_id))
                 invoice_details = gp_ws.get_invoice_detail(invoice_id)
 
-                if not invoice_details['BatchKey'][
-                    'Id'].lower().startswith('transfer'):
+                if not invoice_details['BatchKey']['Id'].lower().startswith(
+                        'transfer'):
                     logger.info('Invoice {} not ready for transfer, '
                                 'skipping it.'.format(invoice_id))
                     continue
@@ -51,14 +50,13 @@ class Command(BaseCommand):
                 shipping_invoice = ShippingInvoice.objects.create(
                     purchase_order=purchase_order,
                     invoice_id=invoice_id,
-                    # invoice_date=invoice_details['InvoiceDate'],
-                    # actual_ship_date=invoice_details['InvoiceDate'],
                     invoice_date=invoice_details['UserDefined']['Date01'],
                     actual_ship_date=invoice_details['UserDefined']['Date01'],
                     boxes=invoice_details['UserDefined']['List01'] or 0,
                     weight=invoice_details['UserDefined']['Text01'] or 0,
-                    shipping_cost=int(invoice_details['UserDefined']['List02'] or 0),
-                    tracking_number=invoice_details['UserDefined']['Text05'] or 0,
+                    shipping_cost=invoice_details['UserDefined']['List02'] or 0,
+                    tracking_number=invoice_details['UserDefined'][
+                                        'Text05'] or 0,
                     total_amount=invoice_details['TotalAmount']['Value']
                 )
 
@@ -66,7 +64,10 @@ class Command(BaseCommand):
                     isbn = line['ItemKey']['Id']
                     quantity = line['Quantity']['Value']
                     po_line = PurchaseOrderLine.objects.get(
-                        purchase_order=purchase_order, isbn=isbn, quantity=quantity)
+                        purchase_order=purchase_order,
+                        isbn=isbn,
+                        quantity=quantity
+                    )
                     # Create the shipping invoice line object.
                     ShippingInvoiceLine.objects.create(
                         shipping_invoice=shipping_invoice,
