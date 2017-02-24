@@ -33,8 +33,8 @@ class Command(BaseCommand):
                 invoice_details = gp_ws.get_invoice_detail(invoice_id)
 
                 if not invoice_details['BatchKey']['Id'].lower().startswith(
-                        'transfer'):
-                    logger.info('Invoice {} not ready for transfer, '
+                        'transmit'):
+                    logger.info('Invoice {} not ready for transmitting, '
                                 'skipping it.'.format(invoice_id))
                     continue
 

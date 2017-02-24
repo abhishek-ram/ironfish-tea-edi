@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+  <!--<head>-->
+    <!--<style>-->
+        <!--table{-->
+            <!--border: 1px solid black;-->
+            <!--table-layout: fixed;-->
+            <!--width: 200px;-->
+        <!--}-->
+
+        <!--th, td {-->
+            <!--border: 1px solid black;-->
+            <!--overflow: hidden;-->
+            <!--width: 100px;-->
+        <!--}-->
+    <!--</style>-->
+  <!--</head>-->
+  <body>
+    <p>
+      The following orders have been received from TEA in the past 24 hours.
+    </p>
+    <br/>
+    <hr/>
+    {% for po in po_list %}
+      <b>Order #:</b> {{po.order_id}}
+      <br>
+      <b>Order Status:</b> {{po.get_order_status_display}}
+      <br>
+      <b>ISD #:</b> {{ po.isd_code }}
+      <br>
+      <strong>{{po.isd_name}}</strong>
+      <br>{{ po.address_line1 }}
+      {% if po.address_line2 %}<br>{{ po.address_line2 }} {% endif %}
+      <br>{{ po.city}}, {{ po.state }} {{ po.zip }}
+      <br>
+      <b>Sales ID:</b> {{po.sales_id}}
+      <br>
+      <b>Salesperson:</b> {{po.salesperson}}
+      <br>
+      <b>Ship Date:</b> {{po.ship_date|date:"m/d/Y"}}
+      <br>
+      <b>Customer PO:</b> {{po.customer_po}}
+      <br>
+      <b>Contract #:</b> {{po.contract}}
+      <br/>
+      <br/>
+      <h4>PO Line Items</h4>
+      <table style="border:1px solid black;table-layout:fixed;width:800px;">
+        <thead>
+          <tr>
+            <th style="border:1px solid black;overflow:hidden;width:100px;">Sequence</th>
+            <th style="border:1px solid black;overflow:hidden;width:100px;">ISBN #</th>
+            <th style="border:1px solid black;overflow:hidden;width:100px;width: 30%;">ISBN Title</th>
+            <th style="border:1px solid black;overflow:hidden;width:100px;">Line Qty</th>
+            <th style="border:1px solid black;overflow:hidden;width:100px;">Ext. Cost</th>
+            <th style="border:1px solid black;overflow:hidden;width:100px;">Unit Price</th>
+            <th style="border:1px solid black;overflow:hidden;width:100px;">Subtotal</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for line in po.lines.all %}
+
+          <tr>
+            <td style="border:1px solid black;overflow:hidden;width:100px;">{{ line.sequence }}</td>
+            <td style="border:1px solid black;overflow:hidden;width:100px;">{{ line.isbn }}</td>
+            <td style="border:1px solid black;overflow:hidden;width:100px;">{{ line.description }}</td>
+            <td style="border:1px solid black;overflow:hidden;width:100px;">{{ line.quantity }}</td>
+            <td style="border:1px solid black;overflow:hidden;width:100px;">{{ line.school_district_owes }}</td>
+            <td style="border:1px solid black;overflow:hidden;width:100px;">{{ line.unit_price }}</td>
+            <td style="border:1px solid black;overflow:hidden;width:100px;">{{ line.sub_total }}</td>
+          </tr>
+          {% endfor %}
+      </tbody>
+      </table>
+      <hr/>
+    {% endfor %}
+  </body>
+</html>
