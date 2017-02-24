@@ -52,3 +52,13 @@ class ShippingInvoiceForm(forms.Form):
                     "Invalid detail file has been uploaded")
             detail_rows.append(detail_row)
         return detail_rows
+
+
+class MultipleChoiceFieldNoValidation(forms.MultipleChoiceField):
+    def validate(self, value):
+        pass
+
+
+class ActionForm(forms.Form):
+    action = forms.CharField(max_length=100)
+    id_list = MultipleChoiceFieldNoValidation()

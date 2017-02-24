@@ -28,6 +28,9 @@ urlpatterns = [
     url(r'^shipping_invoice/(?P<pk>[a-zA-Z0-9]+)/$',
         login_required(views.ShippingInvoiceDetail.as_view()),
         name='shipping-invoice-detail'),
+    url(r'^shipping_invoice/(?P<pk>[a-zA-Z0-9]+)/refresh/$',
+        login_required(views.ShippingInvoiceRefresh.as_view()),
+        name='shipping-invoice-refresh'),
 
     url(r'school/$',
         login_required(views.SchoolList.as_view()),

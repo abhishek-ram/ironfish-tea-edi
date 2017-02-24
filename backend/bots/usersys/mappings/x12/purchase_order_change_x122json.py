@@ -12,7 +12,8 @@ def main(inn, out):
     inn.ta_info['botskey'] = out.ta_info['botskey'] = doc_num
     out.put({'BOTSID': 'Header', 'OrderNumber': doc_num})
 
-    order_date = inn.get({'BOTSID': 'ST'}, {'BOTSID': 'BCH', 'BCH06.02': None}) + \
+    order_date = inn.get({'BOTSID': 'ST'},
+                         {'BOTSID': 'BCH', 'BCH06.02': None}) + \
                  inn.get({'BOTSID': 'ST'}, {'BOTSID': 'BCH', 'BCH06.01': None})
     out.put({'BOTSID': 'Header', 'OrderDate': order_date})
 
@@ -50,6 +51,8 @@ def main(inn, out):
         line.put({'BOTSID': 'LineItem',
                   'StudentEdition': poc.get({'BOTSID': 'POC', 'POC11': None})})
         line.put({'BOTSID': 'LineItem',
-                  'StudentEditionCost': poc.get({'BOTSID': 'POC', 'POC13': None})})
+                  'StudentEditionCost': poc.get(
+                      {'BOTSID': 'POC', 'POC13': None})})
         line.put({'BOTSID': 'LineItem',
-                  'SchoolDistrictOwes': poc.get({'BOTSID': 'POC', 'POC15': None})})
+                  'SchoolDistrictOwes': poc.get(
+                      {'BOTSID': 'POC', 'POC15': None})})

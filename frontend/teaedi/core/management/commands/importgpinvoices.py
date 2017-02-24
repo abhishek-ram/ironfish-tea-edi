@@ -64,10 +64,7 @@ class Command(BaseCommand):
                     isbn = line['ItemKey']['Id']
                     quantity = line['Quantity']['Value']
                     po_line = PurchaseOrderLine.objects.get(
-                        purchase_order=purchase_order,
-                        isbn=isbn,
-                        quantity=quantity
-                    )
+                        request=purchase_order, pk=isbn, quantity=quantity)
                     # Create the shipping invoice line object.
                     ShippingInvoiceLine.objects.create(
                         shipping_invoice=shipping_invoice,

@@ -83,7 +83,8 @@ def main(inn, out):
 
     order_hl.put({'BOTSID': 'HL'}, {'BOTSID': 'TDS'},
                  {'BOTSID': 'PRF',
-                  'PRF01': inn.get({'BOTSID': 'Invoice', 'purchase_order': None}),
+                  'PRF01': inn.get(
+                      {'BOTSID': 'Invoice', 'purchase_order': None}),
                   'PRF03': '0',
                   'PRF04': transform.datemask(ord_date, 'CCYY-MM-DD', 'YYMMDD'),
                   'PRF05': inn.get({'BOTSID': 'Invoice', 'isd_code': None}),
@@ -134,7 +135,8 @@ def main(inn, out):
         line_hl.put({'BOTSID': 'HL'}, {'BOTSID': 'IT1'},
                     {'BOTSID': 'IT3',
                      'IT301': line.get({'BOTSID': 'Lines', 'quantity': None}),
-                     'IT302': line.get({'BOTSID': 'Lines', 'quantity_uom': None}),
+                     'IT302': line.get(
+                         {'BOTSID': 'Lines', 'quantity_uom': None}),
                      'IT303': 'SH',
                      'IT304': '0'
                      })
@@ -152,7 +154,8 @@ def main(inn, out):
                     {'BOTSID': 'SAC',
                      'SAC01': 'C',
                      'SAC02': 'ZZZZ',
-                     'SAC05': line.get({'BOTSID': 'Lines', 'total_amount': None}),
+                     'SAC05': line.get(
+                         {'BOTSID': 'Lines', 'total_amount': None}),
                      })
 
         hl_count += 1

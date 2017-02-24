@@ -20,9 +20,11 @@
             <div class="clearfix"></div>
           </div>
           <div class="x_content">
+            <form action="" method="post">{% csrf_token %}
             <table id="datatable" class="table table-striped table-bordered">
               <thead>
                 <tr>
+                  <th><input type="checkbox" id="checkAll"></th>
                   <th>Invoice Number</th>
                   <th>Invoice Date</th>
                   <th>Invoice Status</th>
@@ -35,13 +37,22 @@
                 </tr>
               </thead>
               <tbody>
-                {% for si in object_list %}
+                {% for si in si_list %}
                   <tr>
+                    <td>
+                        {% if si.invoice_status == 'I' %}
+                          <input type="checkbox" name="id_list" value="{{ si.pk }}">
+                        {% else %}
+                          <input type="checkbox" disabled>
+                        {% endif %}
+                    </td>
                     <td><a  href="{% url 'shipping-invoice-detail' si.pk %}">{{ si.pk }}</a></td>
                     <td>{{ si.invoice_date|date:"m/d/Y"  }}</td>
                     <td>
                       {% if si.invoice_status == 'I' %}
                         <span class="label label-default">{{ si.get_invoice_status_display }}</span>
+                      {% elif si.invoice_status == 'RP' %}
+                        <span class="label label-warning">{{ si.get_invoice_status_display }}</span>
                       {% elif si.invoice_status == 'P' %}
                         <span class="label label-primary">{{ si.get_invoice_status_display }}</span>
                       {% elif si.invoice_status == 'A' %}
@@ -56,12 +67,18 @@
                     <td>{{ si.purchase_order.isd_code }}</td>
                     <td>${{ si.total_amount }}</td>
                     <td>
-                      <a href="{% url 'shipping-invoice-detail' si.pk %}" class="btn btn-xs btn-success">View</a>
+                      <a href="{% url 'shipping-invoice-detail' si.pk %}"
+                         class="btn btn-xs btn-success">View</a>
+                      {% if si.invoice_status == 'I' %}
+                        <a href="{% url 'shipping-invoice-refresh' si.pk %}"
+                           class="btn btn-xs btn-danger">Refresh</a>
+                      {% endif %}
                     </td>
                   </tr>
                 {% endfor %}
               </tbody>
             </table>
+            </form>
           </div>
         </div>
       </div>
@@ -76,14 +93,41 @@
   <script src="{% static "vendors/datatables.net-bs/js/dataTables.bootstrap.min.js" %}"></script>
   <script>
     $(document).ready(function() {
-      $('#datatable').dataTable({
+      var table = $('#datatable').DataTable ({
+        "responsive": true,
         "order": [[ 1, "desc" ]],
         "columnDefs": [
           { "type": "date", targets: [1, 4] },
-          { "searchable": false, "targets": [2, 8] },
-          { "sortable": false, "targets": [2, 3, 5, 6, 8] }
+          { "searchable": false, "targets": [3, 9] },
+          { "sortable": false, "targets": [0, 3, 4, 6, 7, 9] }
         ]
       });
+      var action_html =
+        '<label>Action: '+
+        '<select class="form-control" name="action" id="id_action" required>' +
+        '<option selected="selected" value>------------</option>' +
+        '<option value="process_selected">Process Selected Invoices</option>' +
+        '</select> ' +
+        '<button type="submit" class="btn btn-default">Go</button>' +
+        '</label>';
+      $("#datatable_length").after(action_html);
+      $('#checkAll').click(function() {
+            if ($(this).is(":checked")) {
+                table.rows({page: "current"}).every( function () {
+                    var d = this.data();
+                    if (! $(d[0]).attr('disabled')) {
+                        d[0] = $(d[0]).attr('checked', true)[0].outerHTML;
+                    }
+                    this.data(d).draw();
+                });
+            } else {
+                table.rows({page: "current"}).every( function () {
+                    var d = this.data();
+                    d[0] = $(d[0]).attr('checked', false)[0].outerHTML;
+                    this.data(d).draw();
+                });
+            }
+        });
     });
   </script>
 {% endblock %}

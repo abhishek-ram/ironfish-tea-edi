@@ -12,7 +12,8 @@ def main(inn, out):
     inn.ta_info['botskey'] = out.ta_info['botskey'] = doc_num
     out.put({'BOTSID': 'Header', 'OrderNumber': doc_num})
 
-    order_date = inn.get({'BOTSID': 'ST'}, {'BOTSID': 'BEG', 'BEG05.02': None}) + \
+    order_date = inn.get({'BOTSID': 'ST'},
+                         {'BOTSID': 'BEG', 'BEG05.02': None}) + \
                  inn.get({'BOTSID': 'ST'}, {'BOTSID': 'BEG', 'BEG05.01': None})
     out.put({'BOTSID': 'Header',
              'OrderDate': transform.datemask(
@@ -31,7 +32,8 @@ def main(inn, out):
     ship_date_begin = inn.get({'BOTSID': 'ST'},
                               {'BOTSID': 'DTM', 'DTM01': '010', 'DTM02': None})
     ship_date_begin_ce = inn.get({'BOTSID': 'ST'},
-                                 {'BOTSID': 'DTM', 'DTM01': '010', 'DTM05': None})
+                                 {'BOTSID': 'DTM', 'DTM01': '010',
+                                  'DTM05': None})
 
     if ship_date_begin and ship_date_begin_ce:
         out.put({'BOTSID': 'Header',
@@ -112,6 +114,8 @@ def main(inn, out):
         line.put({'BOTSID': 'LineItem',
                   'StudentEdition': po1.get({'BOTSID': 'PO1', 'PO109': None})})
         line.put({'BOTSID': 'LineItem',
-                  'StudentEditionCost': po1.get({'BOTSID': 'PO1', 'PO111': None})})
+                  'StudentEditionCost': po1.get(
+                      {'BOTSID': 'PO1', 'PO111': None})})
         line.put({'BOTSID': 'LineItem',
-                  'SchoolDistrictOwes': po1.get({'BOTSID': 'PO1', 'PO113': None})})
+                  'SchoolDistrictOwes': po1.get(
+                      {'BOTSID': 'PO1', 'PO113': None})})

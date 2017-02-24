@@ -109,7 +109,7 @@ class CRUDPurchaseOrder(APIView):
 
         # Fetch the original PO from the DB
         po = PurchaseOrder.objects.get(
-            customer_po=request.data['Header']['OrderNumber'])
+            request=request.data['Header']['OrderNumber'], pk=null)
 
         # If PO exists go process each line in the PO change
         email_context = {
@@ -244,7 +244,8 @@ class ProcessAcknowledgment(APIView):
 
         for transaction in request.data['Group']['Transaction']:
             if transaction['Code'] == '857':
-                si = ShippingInvoice.objects.get(pk=transaction['Number'])
+                si = ShippingInvoice.objects.get(request=transaction['Number'],
+                                                 pk=transaction['Number'])
                 si.invoice_status = transaction['Status']
                 si.save()
 

@@ -5,16 +5,11 @@ from django.views.generic import CreateView, DeleteView, UpdateView
 from django.urls import reverse_lazy
 from django.http import HttpResponseRedirect
 from django.contrib import messages
-from django.conf import settings
 from .models import PurchaseOrder, ShippingInvoice
-from .models import ShippingInvoiceLine, PurchaseOrderLine
 from .models import School, SalesPerson, Watcher
-from .forms import WatcherForm, ShippingInvoiceForm
-from traceback import format_exc
+from .forms import WatcherForm, ActionForm
+from .utils import GPWebService
 import logging
-import csv
-import os
-import time
 
 # Get an instance of a logger
 logger = logging.getLogger('teaedi')
@@ -62,13 +57,69 @@ class PurchaseOrderReprocess(DetailView):
             reverse_lazy('po-detail', args=[pk]))
 
 
-class ShippingInvoiceList(ListView):
-    model = ShippingInvoice
+class ShippingInvoiceList(FormView):
+    template_name = 'core/shippinginvoice_list.html'
+    form_class = ActionForm
+
+    def get_context_data(self, **kwargs):
+        context = super(
+            ShippingInvoiceList, self).get_context_data(**kwargs)
+        context['si_list'] = ShippingInvoice.objects.all()
+        return context
+
+    def form_valid(self, form):
+        if not form.cleaned_data['id_list']:
+            messages.error(
+                self.request, 'At least one invoice must be selected for '
+                              'action to be performed.')
+        elif form.cleaned_data['action'] == 'process_selected':
+            count_invoices = len(form.cleaned_data['id_list'])
+            ShippingInvoice.objects.filter(
+                pk__in=form.cleaned_data['id_list']).update(invoice_status='RP')
+            messages.success(
+                self.request, '{} Invoices have been marked for processing. '
+                              'An email will be sent once invoice is '
+                              'sent to TEA.'.format(count_invoices))
+        return HttpResponseRedirect(reverse_lazy('shipping-invoice-list'))
 
 
 class ShippingInvoiceDetail(DetailView):
     model = ShippingInvoice
 
+
+class ShippingInvoiceRefresh(DetailView):
+    model = ShippingInvoice
+
+    def get(self, request, pk, **kwargs):
+        shipping_invoice = self.get_object()
+        try:
+            gp_ws = GPWebService()
+            gp_shipping_invoice = gp_ws.get_invoice_detail(pk)
+
+            shipping_invoice.invoice_date = gp_shipping_invoice[
+                'UserDefined']['Date01']
+            shipping_invoice.actual_ship_date = gp_shipping_invoice[
+                'UserDefined']['Date01']
+            shipping_invoice.boxes = gp_shipping_invoice[
+                                         'UserDefined']['List01'] or 0
+            shipping_invoice.weight = gp_shipping_invoice[
+                                          'UserDefined']['Text01'] or 0
+            shipping_invoice.shipping_cost = gp_shipping_invoice[
+                                                 'UserDefined']['List02'] or 0
+            shipping_invoice.tracking_number = gp_shipping_invoice[
+                                                   'UserDefined']['Text05'] or 0
+            shipping_invoice.total_amount = gp_shipping_invoice[
+                'TotalAmount']['Value']
+            shipping_invoice.save()
+            messages.success(
+                request, 'Shipping Invoice {} has been successfully '
+                         'refreshed.'.format(pk))
+        except Exception, e:
+            messages.error(request,  'Shipping Invoice {} could not be '
+                                     'refreshed. Cause is: {}'.format(pk, e))
+        finally:
+            return HttpResponseRedirect(
+                reverse_lazy('shipping-invoice-detail', args=[pk]))
 
 # class ShippingInvoiceDelete(DeleteView):
 #     model = ShippingInvoice

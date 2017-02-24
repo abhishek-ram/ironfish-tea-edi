@@ -66,6 +66,8 @@
                   <b>Status:</b>
                   {% if object.invoice_status == 'I' %}
                     <span class="label label-default">{{ object.get_invoice_status_display }}</span>
+                  {% elif object.invoice_status == 'RP' %}
+                    <span class="label label-warning">{{ object.get_invoice_status_display }}</span>
                   {% elif object.invoice_status == 'P' %}
                     <span class="label label-primary">{{ object.get_invoice_status_display }}</span>
                   {% elif object.invoice_status == 'A' %}
@@ -159,6 +161,10 @@
                 <div class="col-xs-12">
                   <button class="btn btn-primary pull-right"
                           onclick="window.print();"><i class="fa fa-print"></i> Print</button>
+                  {% if object.invoice_status == 'I' %}
+                    <a href="{% url 'shipping-invoice-refresh' object.pk %}"
+                       class="btn btn-danger pull-right">Refresh</a>
+                  {% endif %}
                 </div>
               </div>
             </section>

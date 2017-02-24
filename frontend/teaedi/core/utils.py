@@ -170,7 +170,7 @@ class GPWebService(object):
                     'List01': '1',
                     'List02': '12.00',
                     'List03': None,
-                    'Text01': '6',
+                    'Text01': '5',
                     'Text02': None,
                     'Text03': '0000123394',
                     'Text04': '0000141474',
