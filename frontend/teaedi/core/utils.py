@@ -87,7 +87,7 @@ class GPWebService(object):
                 'Scope': 'Return All'
             }
             return self.client.service.GetSalesInvoiceList(
-                criteria=criteria, context=self.service_context)
+                criteria=criteria, context=self.service_context) or []
         else:
             return [{
                 'Key': {

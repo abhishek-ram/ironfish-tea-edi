@@ -73,6 +73,8 @@ class ShippingInvoicePending(FormView):
             messages.error(
                 self.request, 'At least one invoice must be selected for '
                               'action to be performed.')
+            return HttpResponseRedirect(
+                reverse_lazy('shipping-invoice-pending'))
         elif form.cleaned_data['action'] == 'process_selected':
             count_invoices = len(form.cleaned_data['id_list'])
             ShippingInvoice.objects.filter(
