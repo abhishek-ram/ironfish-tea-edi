@@ -56,7 +56,12 @@
                   <li><a href="{% url 'school-list' %}"><i class="fa fa-institution" ></i> Schools </a></li>
                   <li><a href="{% url 'salesperson-list' %}"><i class="fa fa-users"></i> Sales Persons </a></li>
                   <li><a href="{% url 'po-list' %}"><i class="fa fa-list-alt"></i> Purchase Orders </a></li>
-                  <li><a href="{% url 'shipping-invoice-list' %}" ><i class="fa fa-globe"></i> Shipping Invoices </a></li>
+                  <li><a><i class="fa fa-globe"></i> Shipping Invoices <span class="fa fa-chevron-down"></span></a>
+                    <ul class="nav child_menu">
+                      <li><a href="{% url 'shipping-invoice-pending' %}" >Pending Invoices</a></li>
+                      <li><a href="{% url 'shipping-invoice-all' %}" >All Invoices</a></li>
+                    </ul>
+                  </li>
                   <!--<li><a href="#" ><i class="fa fa-history"></i> History </a></li>-->
                   <li><a><i class="fa fa-cogs"></i>Settings <span class="fa fa-chevron-down"></span></a>
                     <ul class="nav child_menu">

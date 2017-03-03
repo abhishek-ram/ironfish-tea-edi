@@ -57,14 +57,15 @@ class PurchaseOrderReprocess(DetailView):
             reverse_lazy('po-detail', args=[pk]))
 
 
-class ShippingInvoiceList(FormView):
-    template_name = 'core/shippinginvoice_list.html'
+class ShippingInvoicePending(FormView):
+    template_name = 'core/shippinginvoice_pending.html'
     form_class = ActionForm
 
     def get_context_data(self, **kwargs):
         context = super(
-            ShippingInvoiceList, self).get_context_data(**kwargs)
-        context['si_list'] = ShippingInvoice.objects.all()
+            ShippingInvoicePending, self).get_context_data(**kwargs)
+        context['si_list'] = ShippingInvoice.objects.filter(
+            invoice_status__in=['I', 'RP'])
         return context
 
     def form_valid(self, form):
@@ -80,7 +81,11 @@ class ShippingInvoiceList(FormView):
                 self.request, '{} Invoices have been marked for processing. '
                               'An email will be sent once invoice is '
                               'sent to TEA.'.format(count_invoices))
-        return HttpResponseRedirect(reverse_lazy('shipping-invoice-list'))
+        return HttpResponseRedirect(reverse_lazy('shipping-invoice-all'))
+
+
+class ShippingInvoiceAll(ListView):
+    model = ShippingInvoice
 
 
 class ShippingInvoiceDetail(DetailView):

@@ -19,10 +19,12 @@ class Command(BaseCommand):
         if watchers:
             yesterday = timezone.localtime(timezone.now()) - timedelta(days=1)
             logger.info('Emailing daily order report to :{}'.format(watchers))
+            email_context = {
+                'po_list': PurchaseOrder.objects.filter(
+                    order_date__gte=yesterday)
+            }
             email_body = render_to_string(
-                'emails/purchaseorder_report.html',
-                {'po_list': PurchaseOrder.objects.filter(order_date__gte=yesterday)}
-            )
+                'emails/purchaseorder_report.html', email_context)
             send_mail('[TEAEDI] Daily Purchase Order Report',
                       from_email='',
                       recipient_list=watchers,
