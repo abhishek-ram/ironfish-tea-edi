@@ -58,7 +58,7 @@ class GPWebService(object):
                 settings.GP_WS_USERNAME, settings.GP_WS_PASSWORD)
             self.client = Client(
                 settings.GP_WS_URL,
-                transport=GPTransport(session=session, cache=cache)
+                transport=Transport(session=session, cache=cache)
             )
             self.ws_factory1 = self.client.type_factory('ns1')
             self.ws_factory2 = self.client.type_factory('ns2')
