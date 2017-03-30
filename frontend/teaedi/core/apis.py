@@ -8,6 +8,7 @@ from rest_framework.permissions import IsAuthenticated
 from django.shortcuts import get_object_or_404
 from django.core.mail import send_mail
 from django.template.loader import render_to_string
+from django.db import transaction
 from .models import PurchaseOrder, PurchaseOrderLine, Watcher
 from .models import School, SalesPerson, ShippingInvoice
 from .utils import GPWebService
@@ -20,6 +21,7 @@ class CRUDPurchaseOrder(APIView):
     permission_classes = (IsAuthenticated,)
     parser_classes = (JSONParser,)
 
+    @transaction.atomic
     def post(self, request):
         """Endpoint for creating new purchase orders"""
         po = PurchaseOrder(
