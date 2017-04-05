@@ -21,7 +21,10 @@
                 <div class="count green">{{counts.new_pos}}</div>
 
                 <h3>New Purchase Orders</h3>
-                <p>Purchase orders waiting to be processed</p>
+                <p>Purchase orders waiting to be processed
+                    <a href="{% url 'new-po-list' %}"
+                       class="btn btn-xs btn-primary pull-right">Download List</a>
+                </p>
               </div>
             </div>
             <div class="animated flipInY col-lg-3 col-md-3 col-sm-6 col-xs-12">
@@ -31,7 +34,10 @@
                 <div class="count">{{counts.all_pos}}</div>
 
                 <h3>Total Purchase Orders</h3>
-                <p>Count of all Purchase Orders</p>
+                <p>Count of all Purchase Orders
+                    <a href="{% url 'all-po-list' %}"
+                       class="btn btn-xs btn-primary pull-right">Download List</a>
+                </p>
               </div>
             </div>
             <div class="animated flipInY col-lg-3 col-md-3 col-sm-6 col-xs-12">
@@ -41,7 +47,10 @@
                 <div class="count red">{{counts.new_si}}</div>
 
                 <h3>Pending Shipping Invoices</h3>
-                <p>Invoices waiting to be processed or acknowledged by TEA</p>
+                <p>Invoices waiting to be processed or acknowledged by TEA
+                    <a href="{% url 'pending-si-list' %}"
+                       class="btn btn-xs btn-primary pull-right">Download List</a>
+                </p>
               </div>
             </div>
             <div class="animated flipInY col-lg-3 col-md-3 col-sm-6 col-xs-12">
@@ -51,7 +60,10 @@
                 <div class="count">{{counts.all_si}}</div>
 
                 <h3>Total Shipping Invoices</h3>
-                <p>Count of all Shipping Invoices</p>
+                <p>Count of all Shipping Invoices
+                    <a href="{% url 'all-si-list' %}"
+                       class="btn btn-xs btn-primary pull-right">Download List</a>
+                </p>
               </div>
             </div>
           </div>

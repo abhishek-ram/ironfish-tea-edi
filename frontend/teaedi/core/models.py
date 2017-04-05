@@ -2,51 +2,6 @@ from __future__ import unicode_literals
 from django.db import models
 
 
-class School(models.Model):
-    isd_name = models.CharField(max_length=100)
-    isd_code = models.CharField(max_length=30)
-    district_enrollment = models.CharField(
-        max_length=30, null=True, blank=True)
-    order = models.IntegerField(null=True, blank=True)
-    region = models.IntegerField(null=True, blank=True)
-    sales_id = models.CharField(max_length=10)
-    rsm = models.CharField(max_length=30, null=True, blank=True)
-    address_line1 = models.TextField(max_length=100)
-    address_line2 = models.TextField(max_length=100, null=True, blank=True)
-    address_line3 = models.TextField(max_length=100, null=True, blank=True)
-    city = models.CharField(max_length=30)
-    state = models.CharField(max_length=2)
-    zip = models.CharField(max_length=10)
-    contact_name = models.CharField(max_length=30, null=True, blank=True)
-    contact_phone = models.CharField(max_length=30, null=True, blank=True)
-    contact_fax = models.CharField(max_length=30, null=True, blank=True)
-    contact_email = models.CharField(max_length=100, null=True, blank=True)
-    notes = models.TextField(max_length=100, null=True, blank=True)
-    active = models.BooleanField(default=False)
-    ag = models.BooleanField(default=False)
-    fcs = models.BooleanField(default=False)
-    ti = models.BooleanField(default=False)
-    bm = models.BooleanField(default=False)
-    careers = models.BooleanField(default=False)
-    dag = models.BooleanField(default=False)
-    dfcs = models.BooleanField(default=False)
-    dti = models.BooleanField(default=False)
-    dbm = models.BooleanField(default=False)
-    dcareers = models.BooleanField(default=False)
-    careerdemo = models.BooleanField(default=False)
-
-    def __str__(self):
-        return self.isd_name
-
-    class Meta:
-        ordering = ['isd_name']
-
-
-class SalesPerson(models.Model):
-    school = models.ForeignKey(School, on_delete=models.CASCADE)
-    name = models.CharField(max_length=30)
-
-
 class PurchaseOrder(models.Model):
     ORDER_STATUSES = (
         ('O', 'Open'),
@@ -66,8 +21,6 @@ class PurchaseOrder(models.Model):
     contract = models.CharField(max_length=30)
     isd_name = models.CharField(max_length=100)
     isd_code = models.CharField(max_length=30)
-    sales_id = models.CharField(max_length=30, null=True)
-    salesperson = models.CharField(max_length=30, null=True)
     address_line1 = models.TextField(max_length=100)
     address_line2 = models.TextField(max_length=100, null=True)
     city = models.CharField(max_length=30)

@@ -1,14 +1,17 @@
 from __future__ import unicode_literals
-from django.views.generic import ListView, DetailView, FormView, TemplateView
+from django.views.generic import ListView, DetailView, FormView, TemplateView, \
+    View
 from django.contrib.messages.views import SuccessMessageMixin
 from django.views.generic import CreateView, DeleteView, UpdateView
 from django.urls import reverse_lazy
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponse
 from django.contrib import messages
-from .models import PurchaseOrder, ShippingInvoice
-from .models import School, SalesPerson, Watcher
+from django.utils import timezone
+from .models import PurchaseOrder, ShippingInvoice, Watcher
 from .forms import WatcherForm, ActionForm
 from .utils import GPWebService
+from openpyxl import Workbook
+from openpyxl.writer.excel import save_virtual_workbook
 import logging
 
 # Get an instance of a logger
@@ -128,97 +131,16 @@ class ShippingInvoiceRefresh(DetailView):
             return HttpResponseRedirect(
                 reverse_lazy('shipping-invoice-detail', args=[pk]))
 
-# class ShippingInvoiceDelete(DeleteView):
-#     model = ShippingInvoice
-#     success_url = reverse_lazy('shipping-invoice-list')
-#
-#     def delete(self, request, *args, **kwargs):
-#         self.object = self.get_object()
-#         messages.success(
-#             request, 'Invoice "{0.invoice_id}" for order {0.purchase_order.pk}'
-#                      ' has been deleted successfully'.format(self.object)
-#         )
-#         self.object.delete()
-#         return HttpResponseRedirect(self.get_success_url())
 
-
-class SchoolList(ListView):
-    model = School
-
-
-class SchoolCreate(SuccessMessageMixin, CreateView):
-    model = School
-    fields = ['isd_name', 'isd_code', 'district_enrollment', 'order',
-              'region', 'sales_id', 'rsm', 'address_line1', 'address_line2',
-              'address_line3', 'city', 'state', 'zip', 'contact_name',
-              'contact_phone', 'contact_fax', 'contact_email', 'notes',
-              'active', 'ag', 'fcs', 'ti', 'bm', 'careers', 'dag', 'dfcs',
-              'dti', 'dbm', 'dcareers', 'careerdemo']
-    success_url = reverse_lazy('school-list')
-    success_message = 'School "%(isd_name)s" has been created successfully'
-
-
-class SchoolUpdate(SuccessMessageMixin, UpdateView):
-    model = School
-    fields = ['isd_name', 'isd_code', 'district_enrollment', 'order',
-              'region', 'sales_id', 'rsm', 'address_line1', 'address_line2',
-              'address_line3', 'city', 'state', 'zip', 'contact_name',
-              'contact_phone', 'contact_fax', 'contact_email', 'notes',
-              'active', 'ag', 'fcs', 'ti', 'bm', 'careers', 'dag', 'dfcs',
-              'dti', 'dbm', 'dcareers', 'careerdemo']
-    success_url = reverse_lazy('school-list')
-    success_message = 'School "%(isd_name)s" has been updated successfully'
-
-
-class SalespersonList(ListView):
-    model = SalesPerson
-
-
-class SalespersonCreate(SuccessMessageMixin, CreateView):
-    model = SalesPerson
-    fields = ['name', 'school']
-    success_url = reverse_lazy('salesperson-list')
-    success_message = 'Salesperson "%(name)s" has been mapped to ' \
-                      'school "%(school)s" successfully'
-
-    def get_context_data(self, **kwargs):
-        # Call the base implementation first to get a context
-        context = super(SalespersonCreate, self).get_context_data(**kwargs)
-        valid_schools = []
-        for school in School.objects.all():
-            if not SalesPerson.objects.filter(school=school).exists():
-                valid_schools.append((school.pk, school.isd_name))
-        context['form'].fields['school'].choices = valid_schools
-        return context
-
-
-class SalespersonUpdate(SuccessMessageMixin, UpdateView):
-    model = SalesPerson
-    fields = ['name', 'school']
-    success_url = reverse_lazy('salesperson-list')
-    success_message = 'Salesperson "%(name)s" has been mapped to ' \
-                      'school "%(school)s" successfully'
-
-    def get_context_data(self, **kwargs):
-        # Call the base implementation first to get a context
-        context = super(SalespersonUpdate, self).get_context_data(**kwargs)
-        valid_schools = [(self.object.school.pk, self.object.school.isd_name)]
-        for school in School.objects.all():
-            if not SalesPerson.objects.filter(school=school).exists():
-                valid_schools.append((school.pk, school.isd_name))
-        context['form'].fields['school'].choices = valid_schools
-        return context
-
-
-class SalespersonDelete(DeleteView):
-    model = SalesPerson
-    success_url = reverse_lazy('salesperson-list')
+class ShippingInvoiceDelete(DeleteView):
+    model = ShippingInvoice
+    success_url = reverse_lazy('shipping-invoice-list')
 
     def delete(self, request, *args, **kwargs):
         self.object = self.get_object()
         messages.success(
-            request, 'Mapping deleted between Salesperson "{0.name}" and '
-                     'school "{0.school}" successfully'.format(self.object)
+            request, 'Invoice "{0.invoice_id}" for order {0.purchase_order.pk}'
+                     ' has been deleted successfully'.format(self.object)
         )
         self.object.delete()
         return HttpResponseRedirect(self.get_success_url())
@@ -241,3 +163,92 @@ class WatcherUpdate(SuccessMessageMixin, UpdateView):
     success_url = reverse_lazy('watcher-list')
     success_message = 'Watcher "%(email_id)s" has been updated successfully'
 
+
+class NewPOList(View):
+
+    def get(self, request):
+        wb = Workbook()
+        ws = wb.active
+        ws.append(['Order Number', 'Order Date', 'Order Status', 'Ship Date',
+                   'ISD Name', 'Owed By ISD'])
+        for po in PurchaseOrder.objects.filter(
+                order_status='O').order_by('-order_date'):
+            ws.append(
+                [po.order_id, po.order_date, po.get_order_status_display(),
+                 po.ship_date, po.isd_name, po.owed_by_isd])
+        response = HttpResponse(
+            save_virtual_workbook(wb),
+            content_type='application/vnd.openxmlformats-officedocument.'
+                         'spreadsheetml.sheet')
+        response['Content-Disposition'] = \
+            "attachment; filename=NewPurchaseOrders_{:%Y%m%d}.xlsx".format(
+                timezone.now())
+        return response
+
+
+class AllPOList(View):
+
+    def get(self, request):
+        wb = Workbook()
+        ws = wb.active
+        ws.append(['Order Number', 'Order Date', 'Order Status', 'Ship Date',
+                   'ISD Name', 'Owed By ISD'])
+        for po in PurchaseOrder.objects.all().order_by('-order_date'):
+            ws.append(
+                [po.order_id, po.order_date, po.get_order_status_display(),
+                 po.ship_date, po.isd_name, po.owed_by_isd])
+        response = HttpResponse(
+            save_virtual_workbook(wb),
+            content_type='application/vnd.openxmlformats-officedocument.'
+                         'spreadsheetml.sheet')
+        response['Content-Disposition'] = \
+            "attachment; filename=AllPurchaseOrders_{:%Y%m%d}.xlsx".format(
+                timezone.now())
+        return response
+
+
+class PendingSIList(View):
+
+    def get(self, request):
+        wb = Workbook()
+        ws = wb.active
+        ws.append(['Invoice Number', 'Invoice Date', 'Invoice Status',
+                   'Order Number', 'Actual Invoice Date', 'ISD Name',
+                   'Invoice Amount'])
+        for si in ShippingInvoice.objects.exclude(
+                invoice_status='A').order_by('-invoice_date'):
+            ws.append(
+                [si.invoice_id, si.invoice_date, si.get_invoice_status_display()
+                 , si.purchase_order.order_id, si.actual_ship_date,
+                 si.purchase_order.isd_name, si.total_amount])
+        response = HttpResponse(
+            save_virtual_workbook(wb),
+            content_type='application/vnd.openxmlformats-officedocument.'
+                         'spreadsheetml.sheet')
+        response['Content-Disposition'] = \
+            "attachment; filename=PendingShippingInvoices_{:%Y%m%d}.xlsx".format(
+                timezone.now())
+        return response
+
+
+class AllSIList(View):
+
+    def get(self, request):
+        wb = Workbook()
+        ws = wb.active
+        ws.append(['Invoice Number', 'Invoice Date', 'Invoice Status',
+                   'Order Number', 'Actual Invoice Date', 'ISD Name',
+                   'Invoice Amount'])
+        for si in ShippingInvoice.objects.all().order_by('-invoice_date'):
+            ws.append(
+                [si.invoice_id, si.invoice_date, si.get_invoice_status_display()
+                    , si.purchase_order.order_id, si.actual_ship_date,
+                 si.purchase_order.isd_name, si.total_amount])
+        response = HttpResponse(
+            save_virtual_workbook(wb),
+            content_type='application/vnd.openxmlformats-officedocument.'
+                         'spreadsheetml.sheet')
+        response['Content-Disposition'] = \
+            "attachment; filename=AllShippingInvoices_{:%Y%m%d}.xlsx".format(
+                timezone.now())
+        return response

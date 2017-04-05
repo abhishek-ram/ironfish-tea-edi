@@ -9,8 +9,7 @@ from django.shortcuts import get_object_or_404
 from django.core.mail import send_mail
 from django.template.loader import render_to_string
 from django.db import transaction
-from .models import PurchaseOrder, PurchaseOrderLine, Watcher
-from .models import School, SalesPerson, ShippingInvoice
+from .models import PurchaseOrder, PurchaseOrderLine, Watcher, ShippingInvoice
 from .utils import GPWebService
 from .serializers import ShippingInvoiceSerializer
 from decimal import Decimal
@@ -49,14 +48,6 @@ class CRUDPurchaseOrder(APIView):
                 po.contact_phone = address['ContactPhone']
                 po.contact_email = address['ContactEmail']
                 po.contact_fax = address['ContactFax']
-                school = School.objects.filter(
-                    isd_code=address['Code'].lstrip('0')).first()
-                if school:
-                    po.sales_id = school.sales_id
-                    salesperson = SalesPerson.objects.filter(
-                        school=school).first()
-                    if salesperson:
-                        po.salesperson = salesperson.name
         po.save()
 
         gp_ws_client = GPWebService()

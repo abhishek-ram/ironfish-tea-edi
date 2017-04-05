@@ -3,7 +3,6 @@ from django.contrib import admin
 from django.contrib.auth.views import login, logout
 from django.contrib.auth.decorators import login_required
 from .core import views, apis
-
 urlpatterns = [
     # URLs for the django admin site
     url(r'^admin', admin.site.urls),
@@ -35,29 +34,6 @@ urlpatterns = [
         login_required(views.ShippingInvoiceRefresh.as_view()),
         name='shipping-invoice-refresh'),
 
-    url(r'school/$',
-        login_required(views.SchoolList.as_view()),
-        name='school-list'),
-    url(r'school/add/$',
-        login_required(views.SchoolCreate.as_view()),
-        name='school-add'),
-    url(r'school/(?P<pk>[0-9]+)/$',
-        views.SchoolUpdate.as_view(),
-        name='school-update'),
-
-    url(r'salesperson/$',
-        login_required(views.SalespersonList.as_view()),
-        name='salesperson-list'),
-    url(r'salesperson/add/$',
-        login_required(views.SalespersonCreate.as_view()),
-        name='salesperson-add'),
-    url(r'salesperson/(?P<pk>[0-9]+)/$',
-        login_required(views.SalespersonUpdate.as_view()),
-        name='salesperson-update'),
-    url(r'salesperson/(?P<pk>[0-9]+)/delete/$',
-        login_required(views.SalespersonDelete.as_view()),
-        name='salesperson-delete'),
-
     url(r'watcher/$',
         login_required(views.WatcherList.as_view()),
         name='watcher-list'),
@@ -68,6 +44,19 @@ urlpatterns = [
         login_required(views.WatcherUpdate.as_view()),
         name='watcher-update'),
 
+    url(r'new-po-list/$',
+        login_required(views.NewPOList.as_view()),
+        name='new-po-list'),
+    url(r'all-po-list/$',
+        login_required(views.AllPOList.as_view()),
+        name='all-po-list'),
+    url(r'pending-si-list/$',
+        login_required(views.PendingSIList.as_view()),
+        name='pending-si-list'),
+    url(r'all-si-list/$',
+        login_required(views.AllSIList.as_view()),
+        name='all-si-list'),
+
     # URLs for the TEAEDI REST API
     url(r'^api/purchase_order/$', apis.CRUDPurchaseOrder.as_view()),
     url(r'^api/process_acknowledgment/$', apis.ProcessAcknowledgment.as_view()),
@@ -76,4 +65,5 @@ urlpatterns = [
         apis.ShippingInvoiceMarkProcessed.as_view()),
 
     url(r'^.*', login_required(views.Index.as_view())),
-] 
+]
+
