@@ -47,11 +47,13 @@ class Command(BaseCommand):
 
                 logger.info('Importing invoice {} into the frontend.'.format(
                     invoice_id))
+                ship_date = invoice_details['UserDefined']['Date01'] or \
+                            timezone.localtime(timezone.now()).date()
                 shipping_invoice = ShippingInvoice.objects.create(
                     purchase_order=purchase_order,
                     invoice_id=invoice_id,
-                    invoice_date=invoice_details['UserDefined']['Date01'],
-                    actual_ship_date=invoice_details['UserDefined']['Date01'],
+                    invoice_date=ship_date,
+                    actual_ship_date=ship_date,
                     boxes=invoice_details['UserDefined']['List01'] or 0,
                     weight=invoice_details['UserDefined']['Text01'] or 0,
                     shipping_cost=invoice_details['UserDefined']['List02'] or 0,
