@@ -62,14 +62,21 @@ class Command(BaseCommand):
                     total_amount=invoice_details['TotalAmount']['Value']
                 )
 
+                added_sequences = []
                 for line in invoice_details['Lines']['SalesInvoiceLine']:
                     isbn = line['ItemKey']['Id']
                     quantity = line['Quantity']['Value']
-                    po_line = PurchaseOrderLine.objects.get(
+                    po_lines = PurchaseOrderLine.objects.filter(
                         purchase_order=purchase_order,
                         isbn=isbn,
                         quantity=quantity
                     )
+                    po_line = None
+                    for pl in po_lines:
+                        if pl.sequence not in added_sequences:
+                            po_line = pl
+                            added_sequences.append(pl.sequence)
+
                     # Create the shipping invoice line object.
                     ShippingInvoiceLine.objects.create(
                         shipping_invoice=shipping_invoice,
