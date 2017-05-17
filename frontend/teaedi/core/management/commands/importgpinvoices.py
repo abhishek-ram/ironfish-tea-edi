@@ -76,6 +76,7 @@ class Command(BaseCommand):
                         if pl.sequence not in added_sequences:
                             po_line = pl
                             added_sequences.append(pl.sequence)
+                            break
 
                     # Create the shipping invoice line object.
                     ShippingInvoiceLine.objects.create(
