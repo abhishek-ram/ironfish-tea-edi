@@ -91,7 +91,6 @@ ENV/
 # This project settings
 .DS_STORE
 .idea
-db*
+db.sqlite3
 settings.py
 botssys/
-migrations/
