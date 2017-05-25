@@ -20,8 +20,9 @@ def main(inn, out):
         trans.put({'BOTSID': 'Transaction',
                    'Code': ak2.get({'BOTSID': 'AK2', 'AK201': None})})
         reference = ak2.get({'BOTSID': 'AK2', 'AK202': None})
-        original_transaction = list(botslib.query(
-            'select * from ta where reference="{}"'.format(reference.lstrip('0'))))
+        original_transaction = list(
+            botslib.query("select * from ta where reference='{}'".format(
+                reference.lstrip('0'))))
 
         if not original_transaction:
             raise TransactionNotFound(

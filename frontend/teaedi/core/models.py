@@ -128,7 +128,7 @@ class ShippingInvoiceLine(models.Model):
         max_length=2, choices=QUANTITY_UOM_CHOICES)
     unit_price = models.DecimalField(max_digits=20, decimal_places=2)
     total_amount = models.DecimalField(max_digits=20, decimal_places=2)
-    actual_ship_date = models.DateField(null=True)
+    actual_ship_date = models.DateField()
     isbn = models.CharField(max_length=30)
     description = models.TextField()
     student_edition = models.CharField(max_length=30)

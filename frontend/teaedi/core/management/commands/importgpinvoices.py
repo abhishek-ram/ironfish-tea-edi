@@ -47,8 +47,10 @@ class Command(BaseCommand):
 
                 logger.info('Importing invoice {} into the frontend.'.format(
                     invoice_id))
-                ship_date = invoice_details['UserDefined']['Date01'] or \
-                            timezone.localtime(timezone.now()).date()
+                ship_date = \
+                    invoice_details['UserDefined']['Date01'] or \
+                    timezone.localtime(timezone.now()).date()
+
                 shipping_invoice = ShippingInvoice.objects.create(
                     purchase_order=purchase_order,
                     invoice_id=invoice_id,
@@ -88,7 +90,7 @@ class Command(BaseCommand):
                         total_amount=line['TotalAmount']['Value'],
                         isbn=isbn,
                         description=line['ItemDescription'],
-                        actual_ship_date=invoice_details['UserDefined']['Date01'],
+                        actual_ship_date=ship_date,
                         student_edition=po_line.student_edition,
                         student_edition_cost=po_line.student_edition_cost,
                         school_district_owes=po_line.student_edition_cost,
