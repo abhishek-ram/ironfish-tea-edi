@@ -235,11 +235,10 @@ class ProcessAcknowledgment(APIView):
     def post(self, request):
         """Endpoint for processing received EDI acknowledgments from TEA"""
 
-        for transaction in request.data['Group']['Transaction']:
-            if transaction['Code'] == '857':
-                si = ShippingInvoice.objects.get(request=transaction['Number'],
-                                                 pk=transaction['Number'])
-                si.invoice_status = transaction['Status']
+        for trans in request.data['Group']['Transaction']:
+            if trans['Code'] == '857':
+                si = ShippingInvoice.objects.get(pk=trans['Number'])
+                si.invoice_status = trans['Status']
                 si.save()
 
                 # Notify any watchers that are listening for SI Acknowledgments
@@ -248,13 +247,13 @@ class ProcessAcknowledgment(APIView):
                 if watchers:
                     email_body = (
                         'Shipping invoice %s has been acknowledged by TEA with'
-                        ' status "%s".') % (transaction['Number'],
+                        ' status "%s".') % (trans['Number'],
                                             si.get_invoice_status_display())
-                    if transaction.get('AdvStatus'):
+                    if trans.get('AdvStatus'):
                         email_body += (
                             '\nReason for the error is "%s". Please contact '
                             'the administrator for assistance in resolving the'
-                            ' issue.') % self.ACK_ERROR_CODES[transaction['AdvStatus']]
+                            ' issue.') % self.ACK_ERROR_CODES[trans['AdvStatus']]
 
                     send_mail(
                         '[TEAEDI] Shipping Invoice Acknowledgment Notification',
