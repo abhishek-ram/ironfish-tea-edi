@@ -56,8 +56,8 @@ class Command(BaseCommand):
                     invoice_id=invoice_id,
                     invoice_date=ship_date,
                     actual_ship_date=ship_date,
-                    boxes=invoice_details['UserDefined']['List01'] or 0,
-                    weight=invoice_details['UserDefined']['Text01'] or 0,
+                    boxes=invoice_details['UserDefined']['List01'] or 1,
+                    weight=invoice_details['UserDefined']['Text01'] or 1,
                     shipping_cost=invoice_details['UserDefined']['List02'] or 0,
                     tracking_number=invoice_details['UserDefined'][
                                         'Text05'] or 0,
