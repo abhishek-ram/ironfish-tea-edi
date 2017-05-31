@@ -76,7 +76,8 @@ def main(inn, out):
 
     order_hl.put({'BOTSID': 'HL'},
                  {'BOTSID': 'TDS',
-                  'TDS01': inn.get({'BOTSID': 'Invoice', 'total_amount': None})
+                  'TDS01': inn.getdecimal(
+                      {'BOTSID': 'Invoice', 'total_amount': None}) / 100
                   })
 
     ord_date = inn.get({'BOTSID': 'Invoice', 'purchase_order_date': None})
