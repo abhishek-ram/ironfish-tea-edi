@@ -7,6 +7,7 @@ import json
 def connect(channeldict):
     pass
 
+
 def main(channeldict, *args, **kargs):
     output_dir = botslib.join(channeldict['path'])
     botslib.dirshouldbethere(output_dir)
@@ -34,5 +35,6 @@ def main(channeldict, *args, **kargs):
         # Return the filename
         yield filename
 
-    def disconnect(channeldict):
-        pass
+
+def disconnect(channeldict):
+    pass

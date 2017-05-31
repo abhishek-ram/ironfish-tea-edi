@@ -207,11 +207,11 @@ class ShippingInvoiceMarkProcessed(APIView):
                 'emails/shippinginvoice_processed.html',
                 {'si': shipping_invoice}
             )
-            send_mail('[TEAEDI] Shipping Invoice Processed Notification',
-                      from_email='',
-                      recipient_list=watchers,
-                      message='',
-                      html_message=email_body)
+            # send_mail('[TEAEDI] Shipping Invoice Processed Notification',
+            #           from_email='',
+            #           recipient_list=watchers,
+            #           message='',
+            #           html_message=email_body)
         return Response({'status': 'OK'})
 
 
