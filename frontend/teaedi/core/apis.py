@@ -191,6 +191,7 @@ class ShippingInvoiceMarkProcessed(APIView):
     authentication_classes = (TokenAuthentication,)
     permission_classes = (IsAuthenticated,)
 
+    @transaction.atomic
     def post(self, request, pk):
         """Endpoint for marking Shipping Invoices as processed"""
 
@@ -207,11 +208,11 @@ class ShippingInvoiceMarkProcessed(APIView):
                 'emails/shippinginvoice_processed.html',
                 {'si': shipping_invoice}
             )
-            # send_mail('[TEAEDI] Shipping Invoice Processed Notification',
-            #           from_email='',
-            #           recipient_list=watchers,
-            #           message='',
-            #           html_message=email_body)
+            send_mail('[TEAEDI] Shipping Invoice Processed Notification',
+                      from_email='',
+                      recipient_list=watchers,
+                      message='',
+                      html_message=email_body)
         return Response({'status': 'OK'})
 
 
