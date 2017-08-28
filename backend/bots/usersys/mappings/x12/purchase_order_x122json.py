@@ -110,7 +110,7 @@ def main(inn, out):
         line.put({'BOTSID': 'LineItem',
                   'UnitPriceCode': po1.get({'BOTSID': 'PO1', 'PO105': None})})
         line.put({'BOTSID': 'LineItem',
-                  'ISBN': po1.get({'BOTSID': 'PO1', 'PO107': None})})
+                  'ISBN': po1.get({'BOTSID': 'PO1', 'PO107': None}).split('-')[0]})
         line.put({'BOTSID': 'LineItem',
                   'StudentEdition': po1.get({'BOTSID': 'PO1', 'PO109': None})})
         line.put({'BOTSID': 'LineItem',
